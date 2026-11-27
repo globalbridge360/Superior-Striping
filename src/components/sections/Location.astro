@@ -1,0 +1,69 @@
+---
+// "Our location" al estilo JP&E: datos de contacto, nota de Google y el mapa del perfil de Google.
+// La dirección postal no se publica hasta que el dueño decida (estrategia/intake.md).
+import { Icon } from 'astro-icon/components';
+import Badge from '../Badge.astro';
+import Button from '../Button.astro';
+import { site } from '../../data/site';
+
+const mapSrc = 'https://maps.google.com/maps?cid=17761430498173705407&output=embed';
+---
+
+<section class="section-y bg-concrete !pt-0" aria-labelledby="location-title">
+  <div class="site-container">
+    <div class="grid gap-8 rounded-[2rem] border border-line bg-paper p-4 md:p-6 lg:grid-cols-[0.85fr_1.15fr] lg:gap-12 lg:p-8" data-reveal>
+      <div class="flex flex-col justify-center px-2 py-4 md:px-4 lg:py-8 lg:pl-8">
+        <Badge class="self-start">Our location</Badge>
+        <h2 id="location-title" class="h-section mt-6">Find us in Nampa</h2>
+
+        <ul class="mt-8 grid gap-5 text-lg">
+          <li class="flex gap-4">
+            <Icon name="ph:map-pin-duotone" size={26} class="mt-0.5 shrink-0 text-orange-deep" aria-hidden="true" />
+            <span class="leading-snug">{site.street}, Nampa, ID {site.postalCode}<span class="block text-base text-ink-muted">Serving Canyon and Ada counties</span></span>
+          </li>
+          <li class="flex gap-4">
+            <Icon name="ph:clock-duotone" size={26} class="mt-0.5 shrink-0 text-orange-deep" aria-hidden="true" />
+            <span class="leading-snug">
+              {site.hours.map((h) => <span class="block">{h.days}, {h.opens} to {h.closes}</span>)}
+            </span>
+          </li>
+          <li class="flex gap-4">
+            <Icon name="ph:phone-duotone" size={26} class="mt-0.5 shrink-0 text-orange-deep" aria-hidden="true" />
+            <a href={site.phoneHref} class="inline-flex min-h-10 items-center leading-snug hover:underline">{site.phone}</a>
+          </li>
+        </ul>
+
+        <a
+          href={site.googleProfileUrl}
+          target="_blank"
+          rel="noopener"
+          class="mt-8 inline-flex items-center gap-3 self-start rounded-full border border-line bg-white py-2.5 pl-3 pr-5"
+        >
+          <Icon name="logos:google-icon" size={22} aria-hidden="true" />
+          <span class="text-lg font-semibold">{site.rating.value}</span>
+          <span class="flex text-orange" aria-hidden="true">{Array.from({ length: 5 }).map(() => <Icon name="ph:star-fill" size={16} />)}</span>
+          <span class="text-ink-soft">{site.rating.count} Google reviews</span>
+        </a>
+
+        <div class="mt-8 flex flex-wrap items-center gap-3">
+          <Button href={site.googleProfileUrl} label="Get directions" />
+          <a href={site.phoneHref} class="inline-flex items-center gap-2 rounded-full border border-line bg-white px-6 py-3.5 font-semibold transition-colors hover:border-ink/40">
+            <Icon name="ph:phone" size={20} aria-hidden="true" />
+            Call now
+          </a>
+        </div>
+      </div>
+
+      <div class="relative min-h-[22rem] overflow-hidden rounded-[1.4rem] bg-concrete lg:min-h-[34rem]">
+        <iframe
+          src={mapSrc}
+          title="Superior Striping on Google Maps"
+          class="absolute inset-0 h-full w-full border-0"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+  </div>
+</section>

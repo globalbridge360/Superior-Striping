@@ -1,0 +1,112 @@
+---
+// "Who we are" al estilo Canopy: etiqueta centrada, párrafo que se escribe con el scroll
+// (cada letra pasa de gris claro a tinta) y debajo la foto con una muesca en la esquina.
+import { Icon } from 'astro-icon/components';
+import Badge from '../Badge.astro';
+import Media from '../Media.astro';
+import { images } from '../../data/images';
+import { site } from '../../data/site';
+import { illustrations as ill } from '../../data/illustrations';
+
+const features = [
+  { art: ill.sealerCoats, title: 'Two coats, every time', text: 'Many crews stop at one. We brush the edges and spray the body twice.' },
+  { art: ill.sealerPlant, title: 'Batch-plant sealer', text: 'We use a commercial-grade emulsion with pulverized slate from a batch plant, not the buckets sold at hardware stores.' },
+  { art: ill.cracksFirst, title: 'Cracks filled first', text: 'Every crack gets hot rubber before any sealer goes down.' },
+];
+const reviewers = ['JZ', 'KB', 'TS', 'AG'];
+---
+
+<section class="section-y bg-concrete" aria-labelledby="about-title">
+  <div class="site-container">
+    <div class="flex flex-col items-center text-center">
+      <Badge>Who we are</Badge>
+      <p class="mt-10 max-w-[52rem] text-[1.75rem] leading-[1.2] tracking-[-0.01em] md:text-[2.25rem] lg:text-[2.75rem]" data-scroll-write>
+        We're a veteran-owned, family-run crew from Nampa. Our owner, Scott Mitchell, is also a Christian missionary who travels the world, and the work we do here helps pay for that mission. On your lot, the job is the same every time: fill the cracks, put down two coats and paint the lines straight.
+      </p>
+    </div>
+
+    <div class="mt-16 grid items-end gap-6 lg:mt-24 lg:grid-cols-[17rem_1fr_17rem] lg:gap-8">
+      <!-- Tarjeta de experiencia -->
+      <div class="order-2 flex flex-col justify-between rounded-[var(--radius-card)] bg-paper p-5 lg:order-1 lg:min-h-[17.5rem]" data-reveal>
+        <div>
+          <p class="font-display text-[4rem] font-medium leading-none tracking-[-0.03em]">9+</p>
+          <p class="mt-2 text-ink-soft">Years sealing and striping Treasure Valley asphalt</p>
+        </div>
+        <div class="mt-8 flex items-center gap-3">
+          <Media
+            image={images.owner}
+            class="h-12 w-12 shrink-0 rounded-full bg-ink"
+            sizes="48px"
+            widths={[96]}
+          />
+          <p class="text-sm leading-tight">
+            <span class="block font-semibold">{site.owner}</span>
+            <span class="text-ink-muted">Owner and U.S. veteran</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Foto principal con muesca: el botón vive en la esquina recortada -->
+      <div class="relative order-1 lg:order-2">
+        <Media
+          image={images.crewTeam}
+          class="aspect-[4/3] rounded-[var(--radius-card)] lg:aspect-[832/540]"
+          imgClass="object-[center_55%]"
+          sizes="(min-width: 1024px) 56vw, 100vw"
+          widths={[640, 960, 1280, 1600]}
+          parallax
+        />
+        <div class="notch" style="--notch-bg: var(--color-concrete)">
+          <a
+            href="/about-us/"
+            class="group flex items-center gap-3 rounded-full bg-asphalt py-2 pl-5 pr-2 font-semibold text-paper"
+          >
+            Meet the crew
+            <span class="grid h-10 w-10 place-items-center rounded-full bg-orange text-asphalt transition-transform duration-500 group-hover:-rotate-45">
+              <Icon name="ph:arrow-right-bold" size={16} aria-hidden="true" />
+            </span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Reseñas y por qué -->
+      <div class="order-3 lg:pb-2" data-reveal>
+        <h2 id="about-title" class="font-display text-[1.5rem] font-medium leading-tight">
+          The crew behind Superior Striping
+        </h2>
+        <a href={site.googleProfileUrl} class="mt-6 inline-flex items-center gap-4" rel="noopener" target="_blank">
+          <span class="flex -space-x-2" aria-hidden="true">
+            {
+              reviewers.map((r) => (
+                <span class="grid h-10 w-10 place-items-center rounded-full border-2 border-concrete bg-ink text-xs font-bold text-paper">
+                  {r}
+                </span>
+              ))
+            }
+          </span>
+          <span class="text-sm leading-tight">
+            <span class="flex items-center gap-1.5 font-semibold">
+              <Icon name="logos:google-icon" size={13} aria-hidden="true" />
+              {site.rating.value} on Google
+            </span>
+            <span class="text-ink-muted">from {site.rating.count} reviews</span>
+          </span>
+        </a>
+      </div>
+    </div>
+
+    <ul class="mt-16 grid gap-8 border-t border-line pt-10 md:grid-cols-3">
+      {
+        features.map((f) => (
+          <li class="flex items-center gap-3" data-reveal>
+            <Media image={f.art} class="-ml-3 h-24 w-24 shrink-0 md:h-28 md:w-28" imgClass="!object-contain" sizes="112px" widths={[224]} fallbackFormat="png" />
+            <span>
+              <span class="block text-lg font-semibold">{f.title}</span>
+              <span class="mt-1 block text-ink-soft">{f.text}</span>
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

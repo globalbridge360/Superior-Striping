@@ -1,0 +1,13 @@
+# robots.txt — https://superior-striping.com
+# Producción. No copiar el robots.txt del entorno de pruebas.
+# Si el sitio sigue en WordPress, añadir:
+#   Disallow: /wp-admin/
+#   Allow: /wp-admin/admin-ajax.php
+
+User-agent: *
+Allow: /
+Disallow: /search/
+Disallow: /*?s=
+Disallow: /*?*add-to-cart=
+
+Sitemap: https://superior-striping.com/sitemap.xml

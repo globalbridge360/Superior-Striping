@@ -1,0 +1,161 @@
+---
+// "Our work" al estilo Canopy: carrusel con perspectiva. La tarjeta activa queda al frente
+// y las vecinas giran hacia el centro, más pequeñas y en sombra. Sin JS es una fila con scroll.
+import { Icon } from 'astro-icon/components';
+import Badge from '../Badge.astro';
+import Media from '../Media.astro';
+import { images } from '../../data/images';
+
+const slides = [
+  { title: 'Eagle Forest Products', tag: 'Sealcoating and striping', place: 'Eagle', href: '/case-studies/eagle-forest-products-sealcoating-striping/', image: images.caseEagle },
+  { title: 'Gas station patch repair', tag: 'Asphalt repair', place: 'Boise', href: '/case-studies/maverik-gas-station-asphalt-patching-boise/', image: images.caseMaverik },
+  { title: 'Church lot restripe', tag: 'Parking lot striping', place: 'Boise', href: '/case-studies/church-parking-lot-striping-boise/', image: images.caseChurch },
+  { title: 'Commercial lot, sealed and restriped', tag: 'Sealcoating', place: 'Boise', href: '/parking-lot-sealcoating/', image: images.lotRestriped },
+  { title: 'Retail center restripe', tag: 'Parking lot striping', place: 'Boise', href: '/line-striping/', image: images.segRetail },
+  { title: 'Hot-mix patch, raked and set', tag: 'Asphalt repair', place: 'Boise', href: '/asphalt-patching/', image: images.svcPatching },
+];
+---
+
+<section class="section-y overflow-hidden bg-asphalt text-paper" aria-labelledby="work-title" data-work>
+  <div class="site-container">
+    <div class="flex flex-col items-start gap-6">
+      <Badge tone="dark">Our work</Badge>
+      <h2 id="work-title" class="h-section max-w-[13ch]" data-split>Recent jobs around the valley</h2>
+    </div>
+  </div>
+
+  <div class="work-stage mt-14 lg:mt-20" data-work-stage>
+    <ul class="work-track" aria-live="polite" data-work-track>
+      {
+        slides.map((s, i) => (
+          <li class="work-slide" data-work-slide aria-label={`${i + 1} of ${slides.length}: ${s.title}`}>
+            <a href={s.href} class="work-card group" tabindex={i === 0 ? 0 : -1}>
+              <Media
+                image={s.image}
+                class="aspect-[573/400] rounded-[var(--radius-card)]"
+                imgClass="transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:scale-[1.04]"
+                sizes="(min-width: 768px) 605px, 80vw"
+                widths={[480, 800, 1200]}
+              />
+              <span class="flex items-end justify-between gap-4 px-1 pb-1 pt-5">
+                <span>
+                  <span class="block font-display text-[1.375rem] font-medium leading-tight md:text-[1.75rem]">{s.title}</span>
+                  <span class="mt-1 block text-sm text-paper/60">{s.place}, Idaho</span>
+                </span>
+                <span class="shrink-0 text-right text-sm text-paper/80 md:text-base">{s.tag}</span>
+              </span>
+            </a>
+            <span class="work-shade" data-work-shade aria-hidden="true"></span>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="work-arrows" data-work-arrows hidden>
+      <button type="button" class="work-arrow" data-work-prev aria-label="Previous project">
+        <Icon name="ph:arrow-left" size={24} aria-hidden="true" />
+      </button>
+      <button type="button" class="work-arrow" data-work-next aria-label="Next project">
+        <Icon name="ph:arrow-right" size={24} aria-hidden="true" />
+      </button>
+    </div>
+  </div>
+
+  <div class="site-container mt-28 flex justify-center md:mt-14">
+    <a class="link-arrow text-paper" href="/case-studies/">See every case study</a>
+  </div>
+</section>
+
+<style>
+  /* Sin JS: fila horizontal con scroll */
+  .work-track {
+    display: flex;
+    gap: 1.25rem;
+    overflow-x: auto;
+    padding-inline: 1.25rem;
+    scroll-snap-type: x mandatory;
+  }
+  .work-slide {
+    position: relative;
+    flex: 0 0 min(37.8rem, 82vw);
+    scroll-snap-align: center;
+  }
+  .work-card {
+    display: block;
+    padding: 1rem;
+    border-radius: var(--radius-card);
+    background: var(--color-ink);
+  }
+  .work-shade {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-card);
+    background: linear-gradient(90deg, rgb(17 24 29 / 0.9), rgb(17 24 29 / 0.55));
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Con JS: escenario con perspectiva, tarjetas apiladas en el centro */
+  :global(html.js) .work-stage {
+    position: relative;
+    perspective: 2000px;
+  }
+  :global(html.js) .work-track {
+    position: relative;
+    display: block;
+    overflow: visible;
+    padding: 0;
+    height: var(--work-h, 32rem);
+  }
+  :global(html.js) .work-slide {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: min(37.8rem, 82vw);
+    margin-left: calc(min(37.8rem, 82vw) / -2);
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+  .work-arrows {
+    position: absolute;
+    left: 50%;
+    top: 42%;
+    width: calc(min(37.8rem, 82vw) + 4.5rem);
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+    z-index: 20;
+  }
+  .work-arrows[hidden] {
+    display: none;
+  }
+  .work-arrow {
+    pointer-events: auto;
+    display: grid;
+    place-items: center;
+    width: 4.4rem;
+    height: 4.4rem;
+    border-radius: 999px;
+    background: var(--color-paper);
+    color: var(--color-asphalt);
+    transition: transform 0.25s var(--ease-out-quart), background-color 0.3s;
+  }
+  .work-arrow:hover {
+    background: var(--color-orange);
+  }
+  .work-arrow:active {
+    transform: scale(0.94);
+  }
+  @media (max-width: 767px) {
+    .work-arrows {
+      top: auto;
+      bottom: -5.5rem;
+      width: 10rem;
+    }
+    .work-arrow {
+      width: 3.5rem;
+      height: 3.5rem;
+    }
+  }
+</style>

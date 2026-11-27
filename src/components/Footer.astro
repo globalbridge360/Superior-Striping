@@ -1,0 +1,120 @@
+---
+import { Icon } from 'astro-icon/components';
+import Logo from './Logo.astro';
+import Button from './Button.astro';
+import Media from './Media.astro';
+import { images } from '../data/images';
+import { illustrations } from '../data/illustrations';
+import { services, cities, company, legal, site, cta } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="relative bg-asphalt text-paper">
+  <!-- CTA en tarjeta, con la máquina de striping y los conos saliendo por las esquinas -->
+  <div class="bg-concrete pb-24 pt-6 md:pb-32">
+    <section class="site-container" aria-labelledby="footer-cta-title">
+      <div class="relative">
+        <div class="relative isolate overflow-hidden rounded-[2rem] bg-asphalt">
+          <Media
+            image={images.footerLine}
+            class="absolute inset-0 -z-10"
+            imgClass="h-full w-full object-cover object-[center_72%]"
+            sizes="100vw"
+            widths={[800, 1280, 1920]}
+            parallax
+          />
+          <div class="absolute inset-0 -z-10 bg-gradient-to-b from-asphalt/75 via-asphalt/70 to-asphalt/90"></div>
+          <div class="flex flex-col items-center px-6 py-20 text-center md:px-40 md:py-28">
+            <h2 id="footer-cta-title" class="h-section max-w-[16ch]" data-split>
+              Get your lot sealed, striped and ready for next season
+            </h2>
+            <p class="lead mt-6 max-w-[34rem] text-paper/80" data-reveal>
+              Call the crew about sealcoating, striping or repairs, or send us the details and we'll get back to you with an estimate.
+            </p>
+            <div class="mt-10 flex flex-wrap items-center justify-center gap-4" data-reveal>
+              <Button href={cta.href} label={cta.label} />
+              <a href={site.phoneHref} class="inline-flex items-center gap-2 rounded-full bg-paper px-6 py-3.5 font-semibold text-asphalt">
+                <Icon name="ph:phone" size={20} aria-hidden="true" />
+                {site.phone}
+              </a>
+            </div>
+          </div>
+        </div>
+        <Media
+          image={illustrations.striper}
+          class="pointer-events-none absolute -bottom-10 -left-4 hidden h-56 w-56 md:block lg:-bottom-14 lg:-left-10 lg:h-80 lg:w-80"
+          imgClass="!object-contain"
+          sizes="320px"
+          widths={[320, 640]}
+          fallbackFormat="png"
+        />
+        <Media
+          image={illustrations.cones}
+          class="pointer-events-none absolute -bottom-8 -right-2 hidden h-44 w-44 md:block lg:-bottom-12 lg:-right-8 lg:h-64 lg:w-64"
+          imgClass="!object-contain"
+          sizes="256px"
+          widths={[256, 512]}
+          fallbackFormat="png"
+        />
+      </div>
+    </section>
+  </div>
+
+  <div class="relative">
+    <div class="site-container relative grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr] lg:gap-8">
+      <div class="max-w-sm">
+        <a href="/" aria-label="Superior Striping home"><Logo /></a>
+        <p class="mt-6 text-paper/70">
+          Veteran-owned, family-run asphalt sealcoating, striping and repair for parking lots and driveways across the
+          Treasure Valley.
+        </p>
+        <dl class="mt-6 space-y-1 text-sm text-paper/70">
+          {
+            site.hours.map((h) => (
+              <div class="flex gap-2">
+                <dt class="text-paper">{h.days}</dt>
+                <dd>
+                  {h.opens} to {h.closes}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+        <a href={site.phoneHref} class="mt-6 inline-flex min-h-11 items-center gap-2 text-lg font-semibold text-paper">
+          <Icon name="ph:phone-fill" size={20} aria-hidden="true" class="text-orange" />
+          {site.phone}
+        </a>
+      </div>
+
+      <nav aria-label="Services">
+        <p class="mb-4 font-semibold">Services</p>
+        <ul class="space-y-2.5 text-paper/70">
+          {services.map((s) => <li><a class="hover:text-orange" href={s.href}>{s.name}</a></li>)}
+          <li><a class="hover:text-orange" href="/parking-lot-maintenance/">Parking lot maintenance</a></li>
+        </ul>
+      </nav>
+
+      <nav aria-label="Areas we serve">
+        <p class="mb-4 font-semibold">Areas we serve</p>
+        <ul class="space-y-2.5 text-paper/70">
+          {cities.map((c) => <li><a class="hover:text-orange" href={c.href}>{c.name}, ID</a></li>)}
+        </ul>
+      </nav>
+
+      <nav aria-label="Company">
+        <p class="mb-4 font-semibold">Company</p>
+        <ul class="space-y-2.5 text-paper/70">
+          {company.map((c) => <li><a class="hover:text-orange" href={c.href}>{c.label}</a></li>)}
+        </ul>
+      </nav>
+    </div>
+
+    <div class="site-container relative flex flex-col gap-4 border-t border-paper/10 py-8 text-sm text-paper/60 md:flex-row md:items-center md:justify-between">
+      <p>© {year} Superior Striping. Licensed and insured. Based in Nampa, Idaho.</p>
+      <ul class="flex flex-wrap gap-x-6 gap-y-2">
+        {legal.map((l) => <li><a class="hover:text-paper" href={l.href}>{l.label}</a></li>)}
+      </ul>
+    </div>
+  </div>
+</footer>

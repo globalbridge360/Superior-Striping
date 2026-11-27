@@ -1,0 +1,71 @@
+---
+import Pattern from '../Pattern.astro';
+import { Icon } from 'astro-icon/components';
+import Media from '../Media.astro';
+import { illustrations as ill } from '../../data/illustrations';
+
+const steps = [
+  {
+    n: '01',
+    icon: 'ph:clipboard-text-bold',
+    art: ill.unsure,
+    title: 'Walk the lot',
+    text: 'We look at the cracks, the base and the traffic, then put a quote in writing. If sealing won’t hold, we say so.',
+  },
+  {
+    n: '02',
+    icon: 'ph:broom-bold',
+    art: ill.crack,
+    title: 'Clean and fill',
+    text: 'We trim the edges, broom and blow the surface down to bare asphalt, and fill every crack with hot rubber.',
+  },
+  {
+    n: '03',
+    icon: 'ph:paint-roller-bold',
+    art: ill.sealcoating,
+    title: 'Seal and stripe',
+    text: 'Each of the two coats is brushed along the curbs and sprayed across the rest of the lot. Then we repaint the lines.',
+  },
+];
+---
+
+<section class="section-y relative isolate" aria-labelledby="process-title">
+  <Pattern kind="topo" fade="top-right" class="pattern--strong" />
+  <Pattern kind="asphalt" fade="bottom-left" />
+  <div class="site-container relative grid gap-14 lg:grid-cols-[1fr_1.7fr] lg:gap-10">
+    <div class="lg:sticky lg:top-32 lg:self-start">
+      <h2 id="process-title" class="h-section max-w-[11ch]" data-split>How we seal a parking lot</h2>
+      <p class="mt-6 max-w-sm text-lg text-ink-soft" data-reveal>
+        Sealer doesn't stick to dirt. Most of the work happens before the first coat goes down.
+      </p>
+      <p class="mt-8 inline-flex items-center gap-3 rounded-full bg-paper px-4 py-2 text-sm font-semibold" data-reveal>
+        <Icon name="ph:clock-bold" size={18} class="text-orange" aria-hidden="true" />
+        Walk on it in 2 hours. Drive on it after 24.
+      </p>
+    </div>
+
+    <ol class="grid gap-6 md:grid-cols-3 md:gap-5">
+      {
+        steps.map((s, i) => (
+          <li
+            class:list={[
+              'flex flex-col justify-between rounded-[var(--radius-card)] bg-paper p-7 md:min-h-[26rem]',
+              i === 1 && 'md:mt-24',
+              i === 2 && 'md:mt-48',
+            ]}
+            data-reveal
+          >
+            <div class="relative">
+              <span class="absolute left-0 top-0 text-sm font-semibold text-ink-muted">{s.n}</span>
+              <Media image={s.art} class="mx-auto h-56 w-56 md:-mr-3 md:-mt-3 md:ml-auto md:h-52 md:w-52" imgClass="!object-contain" sizes="(min-width: 768px) 208px, 224px" widths={[448]} fallbackFormat="png" />
+            </div>
+            <div class="mt-4 md:mt-6">
+              <h3 class="h-card">{s.title}</h3>
+              <p class="mt-3 text-ink-soft">{s.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>

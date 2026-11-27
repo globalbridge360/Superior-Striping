@@ -1,0 +1,62 @@
+---
+// Fondo decorativo difuminado: curvas de nivel (topo) o grano de asfalto (asphalt).
+// Se pinta con el color de tinta del tema a muy baja opacidad, usando el patrón como máscara,
+// así funciona en claro y oscuro. El padre necesita `relative isolate`.
+interface Props {
+  kind?: 'topo' | 'asphalt';
+  fade?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'center';
+  class?: string;
+}
+const { kind = 'topo', fade = 'top-right', class: className = '' } = Astro.props;
+---
+
+<div class:list={['pattern', `pattern--${kind}`, `pattern--${fade}`, className]} aria-hidden="true" data-pattern></div>
+
+<style>
+  .pattern {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-color: color-mix(in srgb, var(--color-ink) 16%, transparent);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+    -webkit-mask-repeat: repeat, no-repeat;
+    mask-repeat: repeat, no-repeat;
+  }
+  .pattern--topo {
+    --pattern: url('/patterns/topo.svg');
+    -webkit-mask-size: 1800px auto, 100% 100%;
+    mask-size: 1800px auto, 100% 100%;
+  }
+  .pattern--asphalt {
+    --pattern: url('/patterns/asphalt.svg');
+    background-color: color-mix(in srgb, var(--color-ink) 22%, transparent);
+    -webkit-mask-size: 320px 320px, 100% 100%;
+    mask-size: 320px 320px, 100% 100%;
+  }
+  /* El difuminado: el patrón solo asoma desde una esquina (o el centro) y se apaga hacia el resto */
+  .pattern--top-right {
+    --fade: radial-gradient(85% 95% at 100% 0%, #000 0%, rgb(0 0 0 / 0.55) 50%, transparent 85%);
+  }
+  .pattern--top-left {
+    --fade: radial-gradient(85% 95% at 0% 0%, #000 0%, rgb(0 0 0 / 0.55) 50%, transparent 85%);
+  }
+  .pattern--bottom-right {
+    --fade: radial-gradient(85% 95% at 100% 100%, #000 0%, rgb(0 0 0 / 0.55) 50%, transparent 85%);
+  }
+  .pattern--bottom-left {
+    --fade: radial-gradient(85% 95% at 0% 100%, #000 0%, rgb(0 0 0 / 0.55) 50%, transparent 85%);
+  }
+  .pattern--center {
+    --fade: radial-gradient(60% 60% at 50% 50%, #000 0%, rgb(0 0 0 / 0.4) 50%, transparent 80%);
+  }
+  /* Variante más presente, para secciones protagonistas como el proceso */
+  .pattern--strong {
+    background-color: color-mix(in srgb, var(--color-ink) 28%, transparent);
+  }
+  .pattern {
+    -webkit-mask-image: var(--pattern), var(--fade);
+    mask-image: var(--pattern), var(--fade);
+  }
+</style>

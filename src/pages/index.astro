@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/sections/Hero.astro';
+import About from '../components/sections/About.astro';
+import Services from '../components/sections/Services.astro';
+import Process from '../components/sections/Process.astro';
+import Season from '../components/sections/Season.astro';
+import Segments from '../components/sections/Segments.astro';
+import Testimonials from '../components/sections/Testimonials.astro';
+import Work from '../components/sections/Work.astro';
+import LogoStrip from '../components/sections/LogoStrip.astro';
+import Instagram from '../components/sections/Instagram.astro';
+import ServiceAreas from '../components/sections/ServiceAreas.astro';
+import Contact from '../components/sections/Contact.astro';
+import Location from '../components/sections/Location.astro';
+import Faq from '../components/sections/Faq.astro';
+import Blog from '../components/sections/Blog.astro';
+import Recognition from '../components/sections/Recognition.astro';
+import { getImage } from 'astro:assets';
+import { businessNode, websiteNode, faqNode, BUSINESS_ID } from '../data/schema';
+import { homeFaq } from '../data/faq-home';
+import { images } from '../data/images';
+import logo from '../assets/img/logo-superior-striping.png';
+
+const site = 'https://superior-striping.com';
+const pageUrl = `${site}/`;
+const logoImg = await getImage({ src: logo, width: 600, format: 'png' });
+const heroImg = await getImage({ src: images.heroPoster.src, width: 1600, format: 'jpg' });
+
+const title = 'Asphalt Sealcoating & Striping in Nampa & the Treasure Valley | Superior Striping';
+const description =
+  'Veteran-owned asphalt company in Nampa, serving the Treasure Valley. Parking lot sealcoating, striping and repair, with a 2-year written warranty.';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    businessNode(new URL(logoImg.src, site).toString(), new URL(heroImg.src, site).toString()),
+    websiteNode(),
+    {
+      '@type': 'WebPage',
+      '@id': `${pageUrl}#webpage`,
+      url: pageUrl,
+      name: title,
+      description,
+      isPartOf: { '@id': `${site}/#website` },
+      about: { '@id': BUSINESS_ID },
+      primaryImageOfPage: {
+        '@type': 'ImageObject',
+        contentUrl: new URL(heroImg.src, site).toString(),
+        caption: images.heroPoster.description,
+        description: images.heroPoster.alt,
+        contentLocation: images.heroPoster.location,
+      },
+      inLanguage: 'en-US',
+    },
+    faqNode(homeFaq, pageUrl),
+  ],
+};
+---
+
+<BaseLayout title={title} description={description} namespace="home" jsonLd={jsonLd}>
+  <Hero />
+  <LogoStrip />
+  <About />
+  <Recognition />
+  <Services />
+  <Process />
+  <Work />
+  <Season />
+  <Segments />
+  <Testimonials />
+  <Instagram />
+  <ServiceAreas />
+  <Faq />
+  <Contact />
+  <Location />
+  <Blog />
+</BaseLayout>

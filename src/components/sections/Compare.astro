@@ -1,0 +1,101 @@
+---
+// Tabla comparativa con cabecera a la izquierda y, opcionalmente, una lista de factores debajo.
+// En móvil cada fila se convierte en una tarjeta con la etiqueta de su columna.
+import Badge from '../Badge.astro';
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  id: string;
+  badge?: string;
+  title: string;
+  intro?: string;
+  columns: string[];
+  /** Cada fila tiene tantas celdas como columnas; la primera es el nombre de la fila */
+  rows: string[][];
+  /** Índice de la fila que se destaca */
+  highlight?: number;
+  note?: string;
+  factorsTitle?: string;
+  factors?: string[];
+}
+const { id, badge, title, intro, columns, rows, highlight, note, factorsTitle, factors = [] } = Astro.props;
+---
+
+<section class="section-y bg-paper" aria-labelledby={`${id}-title`}>
+  <div class="site-container grid gap-12 lg:grid-cols-[1fr_1.5fr] lg:gap-16">
+    <div>
+      {badge && <Badge>{badge}</Badge>}
+      <h2 id={`${id}-title`} class:list={['h-section max-w-[13ch]', badge && 'mt-5']} data-split>{title}</h2>
+      {intro && <p class="mt-6 max-w-md text-lg text-ink-soft" data-reveal>{intro}</p>}
+    </div>
+    <div>
+      <div class="overflow-hidden rounded-[var(--radius-card)] border border-line" data-reveal>
+        <table class="compare w-full text-left">
+          <thead>
+            <tr>{columns.map((c) => <th scope="col" class="bg-concrete px-6 py-4 text-sm font-semibold text-ink-muted">{c}</th>)}</tr>
+          </thead>
+          <tbody class="divide-y divide-line">
+            {
+              rows.map((r, i) => (
+                <tr class:list={[i === highlight && 'bg-concrete']}>
+                  {r.map((cell, j) =>
+                    j === 0 ? (
+                      <th scope="row" class="px-6 py-5 align-top font-display text-[1.375rem] font-medium leading-tight">{cell}</th>
+                    ) : (
+                      <td data-label={columns[j]} class:list={['px-6 py-5 align-top', j === 1 ? 'font-semibold' : 'text-ink-soft']}>{cell}</td>
+                    ),
+                  )}
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      {note && <p class="mt-4 text-sm text-ink-muted" data-reveal>{note}</p>}
+      {
+        factors.length > 0 && (
+          <div class="mt-12">
+            <h3 class="h-card" data-reveal>{factorsTitle}</h3>
+            <ul class="mt-6 grid gap-x-10 gap-y-4 sm:grid-cols-2">
+              {factors.map((f) => (
+                <li class="flex items-start gap-3 text-ink-soft" data-reveal>
+                  <Icon name="ph:arrow-up-right-bold" size={18} class="mt-1 shrink-0 text-orange-deep" aria-hidden="true" />
+                  {f}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  @media (max-width: 767px) {
+    .compare thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+    .compare tr {
+      display: block;
+      padding: 1.25rem 1.5rem;
+    }
+    .compare th,
+    .compare td {
+      display: block;
+      padding: 0;
+    }
+    .compare td {
+      margin-top: 0.5rem;
+    }
+    .compare td::before {
+      content: attr(data-label) ': ';
+      font-weight: 400;
+      color: var(--color-ink-muted);
+    }
+  }
+</style>

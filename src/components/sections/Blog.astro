@@ -1,0 +1,75 @@
+---
+// Blog destacado al final de la home (estilo Canopy): un post grande horizontal y tres tarjetas.
+import { Icon } from 'astro-icon/components';
+import Badge from '../Badge.astro';
+import Media from '../Media.astro';
+import { Picture } from 'astro:assets';
+import { featuredPosts } from '../../data/posts';
+import { images } from '../../data/images';
+
+const [lead, ...rest] = featuredPosts;
+const fmt = (iso: string) =>
+  new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+---
+
+<section class="section-y bg-concrete" aria-labelledby="blog-title">
+  <div class="site-container">
+    <div class="flex flex-col items-center text-center">
+      <Badge>Blog</Badge>
+      <h2 id="blog-title" class="h-section mt-6 max-w-[18ch]" data-split>Straight answers about your asphalt</h2>
+    </div>
+
+    <!-- Post destacado -->
+    <article class="group relative mt-12 grid gap-6 rounded-[1.5rem] bg-paper p-3 md:p-4 lg:mt-16 lg:grid-cols-2 lg:gap-12" data-reveal>
+      <Media
+        image={lead.image}
+        class="aspect-[16/10] overflow-hidden rounded-[1.1rem]"
+        imgClass="transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:scale-[1.04]"
+        sizes="(min-width: 1024px) 680px, 100vw"
+        widths={[480, 800, 1200]}
+      />
+      <div class="flex flex-col justify-center px-3 pb-4 lg:px-0 lg:pb-0 lg:pr-10">
+        <time datetime={lead.date} class="text-sm text-ink-muted">{fmt(lead.date)}</time>
+        <h3 class="mt-4 font-display text-[1.75rem] font-medium leading-[1.1] tracking-[-0.02em] md:text-[2.4rem]">
+          <a href={lead.href} class="after:absolute after:inset-0 after:content-['']">{lead.title}</a>
+        </h3>
+        <p class="mt-5 max-w-[34rem] text-ink-soft md:text-lg">{lead.excerpt}</p>
+        <p class="mt-7 flex items-center gap-3 font-semibold">
+          <Picture src={images.owner.src} alt="" widths={[80]} sizes="40px" formats={['avif', 'webp']} class="h-10 w-10 rounded-full object-cover" />
+          {lead.author}
+        </p>
+      </div>
+    </article>
+
+    <!-- Tres posts más -->
+    <ul class="mt-4 grid gap-4 md:grid-cols-3 md:mt-6 md:gap-6">
+      {
+        rest.map((p) => (
+          <li class="group relative flex flex-col rounded-[1.5rem] bg-paper p-3 md:p-4" data-reveal>
+            <Media
+              image={p.image}
+              class="aspect-[4/3] overflow-hidden rounded-[1.1rem]"
+              imgClass="transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:scale-[1.04]"
+              sizes="(min-width: 768px) 30vw, 100vw"
+              widths={[400, 640, 900]}
+            />
+            <div class="flex flex-1 flex-col px-2 pb-3 pt-5">
+              <time datetime={p.date} class="text-sm text-ink-muted">{fmt(p.date)}</time>
+              <h3 class="mt-3 font-display text-[1.35rem] font-medium leading-[1.15] tracking-[-0.01em]">
+                <a href={p.href} class="after:absolute after:inset-0 after:content-['']">{p.title}</a>
+              </h3>
+              <p class="mt-3 text-ink-soft">{p.excerpt}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="mt-10 flex justify-center" data-reveal>
+      <a href="/blog/" class="link-arrow inline-flex items-center gap-2 font-semibold">
+        Read the blog
+        <Icon name="ph:arrow-right-bold" size={16} aria-hidden="true" />
+      </a>
+    </div>
+  </div>
+</section>

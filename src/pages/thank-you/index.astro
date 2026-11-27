@@ -1,0 +1,25 @@
+---
+// Destino del formulario cuando no hay JS. No se indexa ni entra en el sitemap.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Button from '../../components/Button.astro';
+import { site } from '../../data/site';
+---
+
+<BaseLayout
+  title="Thanks, we got your request | Superior Striping"
+  description="Your estimate request reached Superior Striping. We'll call you within one business day."
+  namespace="thank-you"
+  noindex
+>
+  <section class="bg-asphalt pb-24 pt-40 text-paper">
+    <div class="site-container">
+      <h1 class="h-display max-w-[14ch]">Thanks, we got your request</h1>
+      <span class="mt-7 block h-[7px] w-48 rounded-[1px] bg-orange" aria-hidden="true"></span>
+      <p class="lead mt-8 max-w-xl text-paper/80">
+        We'll call you within one business day to set a time to walk the lot. Need us sooner? Call
+        <a class="font-semibold text-paper underline" href={site.phoneHref}>{site.phone}</a>.
+      </p>
+      <div class="mt-10"><Button href="/" label="Back to the homepage" /></div>
+    </div>
+  </section>
+</BaseLayout>

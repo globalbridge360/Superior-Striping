@@ -1,0 +1,44 @@
+---
+import Pattern from '../Pattern.astro';
+import Media from '../Media.astro';
+import { images } from '../../data/images';
+
+
+const segments = [
+  { title: 'Retail and restaurants', text: 'Lots that have to look sharp and stay open for customers.', image: images.segRetail },
+  { title: 'Industrial and warehouses', text: 'Truck traffic, loading zones and long stretches of pavement.', image: images.segIndustrial },
+  { title: 'Churches and community spaces', text: 'Crosswalks, accessible stalls and clear traffic flow.', image: images.segChurch },
+  { title: 'HOAs and apartments', text: 'Shared lots and private drives on a maintenance schedule.', image: images.segHoa },
+];
+
+---
+
+<section class="section-y bg-paper relative isolate" aria-labelledby="segments-title">
+  <Pattern kind="topo" fade="bottom-right" />
+  <div class="site-container">
+    <h2 id="segments-title" class="h-section max-w-[18ch]" data-split>Parking lots for businesses, churches and HOAs</h2>
+
+    <ul class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        segments.map((s, i) => (
+          <li class:list={['relative', i % 2 === 1 && 'lg:mt-14']} data-reveal>
+            <Media
+              image={s.image}
+              class="aspect-[3/4] rounded-[var(--radius-card)]"
+              sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+              widths={[400, 700, 1000]}
+            />
+            <div class="relative -mt-20 mx-3 rounded-[1rem] bg-concrete p-5">
+              <h3 class="font-display text-[1.375rem] font-medium leading-tight">{s.title}</h3>
+              <p class="mt-2 text-[0.95rem] text-ink-soft">{s.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="mt-12" data-reveal>
+      <a class="link-arrow text-lg" href="/parking-lot-maintenance/">See our parking lot maintenance programs</a>
+    </p>
+  </div>
+
+</section>

@@ -1,0 +1,222 @@
+---
+// Áreas de servicio al estilo JP&E: ciudades a la izquierda, mapa propio a la derecha con la base
+// en Nampa y líneas punteadas hacia cada ciudad. El mapa es un dibujo propio, sin teselas externas.
+import { Icon } from 'astro-icon/components';
+import Badge from '../Badge.astro';
+import Media from '../Media.astro';
+import { illustrations } from '../../data/illustrations';
+import { cities, site } from '../../data/site';
+import { base, mapCities, MAP_W, MAP_H } from '../../data/areas';
+import { roadMotorway, roadTrunk, roadPrimary, rivers, creeks, lakeLowell, cityAreas, adaCounty } from '../../data/areas-geo';
+
+const pct = (v: number, total: number) => `${((v / total) * 100).toFixed(2)}%`;
+---
+
+<section class="section-y bg-paper" aria-labelledby="areas-title" data-areas>
+  <div class="site-container grid items-center gap-14 lg:grid-cols-[1fr_1.15fr] lg:gap-16">
+    <div>
+      <Badge>Service areas</Badge>
+      <h2 id="areas-title" class="h-section mt-6 max-w-[13ch]" data-split>Where we work in the Treasure Valley</h2>
+      <p class="lead mt-6 max-w-[34rem] text-ink-soft" data-reveal>
+        Our base is in Nampa. We seal, stripe and repair parking lots and driveways across Canyon and Ada counties,
+        from Caldwell to Boise.
+      </p>
+
+      <ul class="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3" data-reveal>
+        {
+          cities.map((c) => (
+            <li>
+              <a href={c.href} class="group flex items-center gap-3 rounded-2xl p-1.5 pr-3 transition-colors hover:bg-concrete">
+                <span class="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-orange/10 text-orange-deep transition-colors group-hover:bg-orange group-hover:text-asphalt">
+                  <Icon name="ph:map-pin-duotone" size={24} aria-hidden="true" />
+                </span>
+                <span class="font-semibold">{c.name}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <a
+        href={site.phoneHref}
+        class="group mt-10 flex items-center gap-4 rounded-[1.25rem] border border-line bg-white p-5"
+        data-reveal
+      >
+        <Icon name="ph:info" size={30} class="shrink-0 text-orange-deep" aria-hidden="true" />
+        <span class="flex-1 leading-snug">
+          <span class="block font-semibold">Not sure if we cover your area?</span>
+          <span class="text-ink-soft">Call us. We travel for larger jobs, including McCall.</span>
+        </span>
+        <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-orange text-asphalt transition-transform duration-500 group-hover:-rotate-45">
+          <Icon name="ph:arrow-right-bold" size={18} aria-hidden="true" />
+        </span>
+      </a>
+    </div>
+
+    <figure class="area-map relative overflow-hidden rounded-[1.5rem] bg-concrete" data-reveal>
+      <svg viewBox={`0 0 ${MAP_W} ${MAP_H}`} class="block h-auto w-full" aria-hidden="true" data-area-svg>
+        <!-- Geografía real (OpenStreetMap): límites de ciudad, agua, carreteras y línea de condado -->
+        <rect width={MAP_W} height={MAP_H} class="geo-land" />
+        <path d={cityAreas} class="geo-city" fill-rule="evenodd" />
+        <path d={adaCounty} class="geo-county" />
+        <path d={creeks} class="geo-creek" />
+        <path d={rivers} class="geo-river" />
+        <path d={lakeLowell} class="geo-lake" />
+        <path d={roadPrimary} class="geo-road geo-road--primary" />
+        <path d={roadTrunk} class="geo-road geo-road--trunk" />
+        <path d={roadMotorway} class="geo-road geo-road--motorway" />
+        <g class="map-label">
+          <text x="28" y="566">CANYON COUNTY</text>
+          <text x="590" y="566">ADA COUNTY</text>
+          <text x="92" y="410" class="map-italic">Lake Lowell</text>
+          <text x="520" y="150" class="map-italic" transform="rotate(-18 520 150)">Boise River</text>
+          <text x="676" y="402" class="map-italic">I-84</text>
+          <text x={MAP_W - 10} y={MAP_H - 8} class="map-credit" text-anchor="end">© OpenStreetMap contributors</text>
+        </g>
+        {
+          mapCities.map((c) => (
+            <line x1={base.x} y1={base.y} x2={c.x} y2={c.y} class="map-route" data-area-route />
+          ))
+        }
+        {mapCities.map((c) => <circle cx={c.x} cy={c.y} r="7.5" class="map-dot" data-area-dot />)}
+      </svg>
+
+      {
+        mapCities.map((c) => (
+          <a
+            href={c.href}
+            class:list={['map-pill', `map-pill--${c.side}`]}
+            style={`left:${pct(c.x, MAP_W)};top:${pct(c.y, MAP_H)}`}
+            data-area-pill
+          >
+            {c.name}
+          </a>
+        ))
+      }
+
+      <div class="map-base" style={`left:${pct(base.x, MAP_W)};top:${pct(base.y, MAP_H)}`} data-area-base>
+        <span class="block h-20 w-20 drop-shadow-[0_14px_18px_rgb(17_24_29/0.28)] md:h-32 md:w-32">
+          <Media image={illustrations.base} class="h-full w-full" imgClass="!object-contain" sizes="128px" widths={[160, 256]} fallbackFormat="png" />
+        </span>
+        <span class="mt-2 rounded-full bg-asphalt px-3 py-1 text-sm font-semibold text-paper md:px-4 md:py-1.5">Nampa base</span>
+      </div>
+      <figcaption class="sr-only">
+        Map of the Treasure Valley showing Superior Striping's base in Nampa and the cities it serves: Caldwell, Star, Eagle,
+        Meridian, Boise and Kuna.
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<style>
+  .area-map {
+    --map-land: #eef0f1;
+    --map-city: #e2e6e9;
+    --map-water: #c6d3db;
+    --map-road: #ffffff;
+    --map-road-minor: #fbfcfc;
+    --map-county: #b9c2c7;
+    --map-text: #7d8990;
+  }
+  :global(html[data-theme='dark']) .area-map {
+    --map-land: #121a1f;
+    --map-city: #19232a;
+    --map-water: #23384a;
+    --map-road: #34434c;
+    --map-road-minor: #26323a;
+    --map-county: #3a4850;
+    --map-text: #8a989f;
+  }
+  .geo-land { fill: var(--map-land); }
+  .geo-city { fill: var(--map-city); }
+  .geo-county { fill: none; stroke: var(--map-county); stroke-width: 1.5; stroke-dasharray: 2 7; stroke-linecap: round; }
+  .geo-river { fill: none; stroke: var(--map-water); stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; }
+  .geo-creek { fill: none; stroke: var(--map-water); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .geo-lake { fill: var(--map-water); }
+  .geo-road { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .geo-road--primary { stroke: var(--map-road-minor); stroke-width: 1.6; }
+  .geo-road--trunk { stroke: var(--map-road); stroke-width: 3; }
+  .geo-road--motorway { stroke: var(--map-road); stroke-width: 6.5; }
+  .map-credit { font-size: 10px !important; letter-spacing: 0 !important; }
+  .map-label text {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    letter-spacing: 0.22em;
+    fill: var(--map-text);
+  }
+  .map-label .map-italic {
+    font-style: italic;
+    letter-spacing: 0.02em;
+    font-size: 14px;
+  }
+  .map-route {
+    stroke: var(--color-orange);
+    stroke-width: 2;
+    stroke-dasharray: 5 6;
+    opacity: 0.8;
+  }
+  .map-dot {
+    fill: var(--color-orange);
+    stroke: var(--color-white);
+    stroke-width: 3;
+  }
+  .map-pill {
+    position: absolute;
+    translate: -50% -50%;
+    white-space: nowrap;
+    border-radius: 999px;
+    background: var(--color-white);
+    padding: 0.4rem 0.9rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    box-shadow: 0 6px 18px rgb(0 0 0 / 0.14);
+    transition: background-color 0.3s, color 0.3s;
+  }
+  .map-pill:hover {
+    background: var(--color-asphalt);
+    color: var(--color-paper);
+  }
+  .map-pill--top {
+    margin-top: -2.1rem;
+  }
+  .map-pill--left {
+    translate: calc(-100% - 0.9rem) -50%;
+  }
+  .map-pill--right {
+    translate: 0.9rem -50%;
+  }
+  .map-base {
+    position: absolute;
+    translate: -50% -2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+  }
+  @media (min-width: 768px) {
+    .map-base {
+      translate: -50% -4rem;
+    }
+  }
+  @media (max-width: 639px) {
+    /* En móvil todas las etiquetas van encima de su punto para que no se pisen ni se salgan */
+    .map-pill,
+    .map-pill--left,
+    .map-pill--right,
+    .map-pill--top {
+      translate: -50% -50%;
+      margin-top: -1.45rem;
+      font-size: 0.8125rem;
+      padding: 0.3rem 0.55rem;
+    }
+    /* Zona táctil más grande que la etiqueta, sin agrandarla sobre el mapa */
+    .map-pill::after {
+      content: '';
+      position: absolute;
+      inset: -0.45rem -0.2rem;
+    }
+    .map-label {
+      display: none;
+    }
+  }
+</style>

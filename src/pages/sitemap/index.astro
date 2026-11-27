@@ -1,0 +1,51 @@
+---
+// Sitemap HTML: se genera del mismo registro que sitemap.xml para que nunca se desincronicen.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { pages } from '../../data/pages';
+
+const groups: { key: (typeof pages)[number]['section']; label: string }[] = [
+  { key: 'core', label: 'Company' },
+  { key: 'services', label: 'Services' },
+  { key: 'locations', label: 'Areas we serve' },
+  { key: 'case-studies', label: 'Case studies' },
+  { key: 'posts', label: 'Resources' },
+  { key: 'legal', label: 'Legal' },
+];
+---
+
+<BaseLayout
+  title="Sitemap | Superior Striping"
+  description="Every page on the Superior Striping website: services, areas we serve, case studies and resources."
+  namespace="sitemap"
+>
+  <section class="bg-asphalt pb-20 pt-40 text-paper">
+    <div class="site-container">
+      <h1 class="h-display">Sitemap</h1>
+      <span class="mt-7 block h-[7px] w-40 rounded-[1px] bg-orange" aria-hidden="true"></span>
+    </div>
+  </section>
+  <section class="section-y">
+    <div class="site-container grid gap-12 md:grid-cols-2 lg:grid-cols-3">
+      {
+        groups
+          .filter((g) => pages.some((p) => p.section === g.key))
+          .map((g) => (
+            <div>
+              <h2 class="h-card">{g.label}</h2>
+              <ul class="mt-5 space-y-2">
+                {pages
+                  .filter((p) => p.section === g.key)
+                  .map((p) => (
+                    <li>
+                      <a class="link-arrow" href={p.path}>
+                        {p.title}
+                      </a>
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          ))
+      }
+    </div>
+  </section>
+</BaseLayout>

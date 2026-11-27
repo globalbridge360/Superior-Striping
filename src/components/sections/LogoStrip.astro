@@ -1,0 +1,89 @@
+---
+// Franja de logos tras el hero, como la de Canopy: celdas con borde a la derecha,
+// logos en gris que recuperan su color al pasar el cursor y una cinta que no se detiene.
+import { Picture } from 'astro:assets';
+import { clients } from '../../data/clients';
+
+// Mismo peso visual para todos: área constante. Un logo ancho queda más bajo y uno cuadrado más alto.
+const AREA = 84;
+const dims = (c: (typeof clients)[number]) => {
+  const ratio = c.src.width / c.src.height;
+  const h = Math.round(AREA / Math.sqrt(ratio));
+  return { h, w: Math.round(h * ratio) };
+};
+---
+
+<section class="logo-strip border-b border-line bg-paper" aria-labelledby="clients-title">
+  <h2 id="clients-title" class="sr-only">Businesses that trust Superior Striping with their parking lots</h2>
+  <div class="relative overflow-hidden" data-marquee data-marquee-speed="45">
+    <ul class="flex w-max" data-marquee-track>
+      {
+        [...clients, ...clients].map((c, i) => (
+          <li class="logo-cell" aria-hidden={i >= clients.length ? 'true' : undefined}>
+            <Picture
+              src={c.src}
+              alt={i >= clients.length ? '' : `${c.name} logo`}
+              widths={[...new Set([Math.min(dims(c).w, c.src.width), Math.min(dims(c).w * 2, c.src.width)])]}
+              sizes={`${dims(c).w}px`}
+              style={`height:${dims(c).h}px;width:${dims(c).w}px`}
+              formats={['avif', 'webp']}
+              fallbackFormat="png"
+              loading="eager"
+              class="max-w-none object-contain mix-blend-multiply grayscale opacity-80 transition duration-500"
+            />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .logo-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--strip-h);
+    padding: 1rem 2rem;
+    border-right: 1px solid var(--color-line);
+  }
+  /* En móvil los logos se reducen para caber en la franja más baja */
+  @media (max-width: 1023px) {
+    .logo-cell :global(img) {
+      zoom: 0.66;
+    }
+  }
+  @media (min-width: 1024px) {
+    .logo-cell {
+      padding: 1.5rem 3rem;
+    }
+  }
+  @media (hover: hover) {
+    .logo-cell:hover :global(img) {
+      filter: none;
+      opacity: 1;
+    }
+  }
+
+  /* Modo oscuro: invertir en gris conserva el dibujo interno (texto dentro de logos con fondo),
+     a diferencia de una silueta plana. Al pasar el mouse la celda se vuelve clara y el logo
+     recupera su color original, así se leen también los logos de tinta oscura. */
+  .logo-cell {
+    transition: background-color 0.4s var(--ease-out-quart);
+  }
+  :global(html[data-theme='dark']) .logo-strip :global(img) {
+    mix-blend-mode: normal;
+    filter: grayscale(1) invert(1) brightness(1.05);
+    opacity: 0.75;
+  }
+  @media (hover: hover) {
+    :global(html[data-theme='dark']) .logo-strip .logo-cell:hover {
+      background: #f8f9f9;
+    }
+    :global(html[data-theme='dark']) .logo-strip .logo-cell:hover :global(img) {
+      filter: none;
+      opacity: 1;
+      mix-blend-mode: multiply;
+    }
+  }
+</style>

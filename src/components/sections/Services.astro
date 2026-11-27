@@ -1,0 +1,87 @@
+---
+import Badge from '../Badge.astro';
+import { Icon } from 'astro-icon/components';
+import Media from '../Media.astro';
+import { images } from '../../data/images';
+
+const cards = [
+  {
+    title: 'Commercial parking lot sealcoating',
+    text: 'We clean it down to bare asphalt, fill the cracks with hot rubber, then put down two coats of sealer.',
+    href: '/parking-lot-sealcoating/',
+    image: images.svcSealcoating,
+    pos: 'object-[72%_center]',
+  },
+  {
+    title: 'Parking lot striping',
+    text: 'Stall lines, arrows, crosswalks and curb paint, laid out and painted crisp.',
+    href: '/line-striping/',
+    image: images.svcStriping,
+  },
+  {
+    title: 'Asphalt crack filling',
+    text: 'Hot-rubber sealant keeps water out of cracks up to half an inch wide.',
+    href: '/crack-filling/',
+    image: images.svcCrack,
+  },
+  {
+    title: 'Asphalt repair & patching',
+    text: 'We cut out potholes and failed sections and replace them before the damage spreads.',
+    href: '/asphalt-patching/',
+    image: images.svcPatching,
+  },
+  {
+    title: 'Bollards, parking blocks & signs',
+    text: 'Steel bollards and concrete blocks that protect storefronts, utilities and people.',
+    href: '/bollards-parking-blocks-signage/',
+    image: images.svcBollards,
+  },
+];
+---
+
+<section class="section-y bg-paper" aria-labelledby="services-title">
+  <div class="site-container">
+    <div class="mb-14 flex flex-col items-start gap-5">
+      <Badge>Services</Badge>
+      <h2 id="services-title" class="h-section max-w-[16ch]" data-split>Everything your asphalt needs, from one crew</h2>
+    </div>
+
+    <div data-stack class="flex flex-col gap-[30px]">
+      {
+        cards.map((card) => (
+          <article data-stack-card class="sticky top-[30px]">
+            <div
+              data-stack-inner
+              class="relative h-[70vh] min-h-[460px] max-h-[720px] origin-center overflow-hidden rounded-[var(--radius-card)] bg-asphalt"
+            >
+              <Media
+                image={card.image}
+                class="absolute inset-0"
+                sizes="(min-width: 1320px) 1260px, 100vw"
+                widths={[640, 1024, 1440, 1920]}
+                imgClass={card.pos}
+                parallax
+              />
+              <div class="group absolute inset-x-4 bottom-4 max-w-[28rem] rounded-[1rem] bg-paper p-6 md:inset-x-auto md:bottom-8 md:left-8 md:p-7">
+                <div class="flex items-start justify-between gap-6">
+                  <h3 class="h-card">
+                    <a href={card.href} class="after:absolute after:inset-0 after:content-['']">{card.title}</a>
+                  </h3>
+                  <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-orange text-asphalt transition-transform duration-500 group-hover:rotate-45" aria-hidden="true">
+                    <Icon name="ph:arrow-up-right-bold" size={16} />
+                  </span>
+                </div>
+                <p class="mt-3 text-ink-soft">{card.text}</p>
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <p class="mt-12 max-w-2xl text-lg text-ink-soft" data-reveal>
+      We also handle <a class="link-arrow text-ink" href="/rock-hauling/">rock hauling</a> and
+      <a class="link-arrow text-ink" href="/gravel-driveway-repair/">gravel driveway repair</a> for homes and job sites around the valley.
+    </p>
+  </div>
+</section>

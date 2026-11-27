@@ -1,0 +1,56 @@
+---
+// Texto + lista + foto en dos columnas. Para "qué incluye", requisitos, cuándo sí / cuándo no.
+import { Icon } from 'astro-icon/components';
+import Badge from '../Badge.astro';
+import Media from '../Media.astro';
+import Pattern from '../Pattern.astro';
+import type { SiteImage } from '../../data/images';
+
+interface Props {
+  id: string;
+  badge?: string;
+  title: string;
+  intro: string;
+  /** 3 a 8 ítems; `href` enlaza el texto del ítem */
+  items: { text: string; href?: string; linkLabel?: string }[];
+  image: SiteImage;
+  /** Foto a la izquierda */
+  reverse?: boolean;
+  /** Icono de la lista: check para lo que se incluye, x para lo que no conviene */
+  mark?: 'check' | 'x';
+  surface?: 'paper' | 'concrete';
+  link?: { label: string; href: string };
+}
+const { id, badge, title, intro, items, image, reverse = false, mark = 'check', surface = 'paper', link } = Astro.props;
+const icon = mark === 'check' ? 'ph:check-bold' : 'ph:x-bold';
+---
+
+<section class:list={['section-y relative isolate', surface === 'paper' ? 'bg-paper' : 'bg-concrete']} aria-labelledby={`${id}-title`}>
+  <Pattern kind="topo" fade={reverse ? 'top-right' : 'bottom-left'} />
+  <div class="site-container grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+    <div class:list={[reverse && 'lg:order-2']}>
+      {badge && <Badge>{badge}</Badge>}
+      <h2 id={`${id}-title`} class:list={['h-section max-w-[14ch]', badge && 'mt-5']} data-split>{title}</h2>
+      <p class="lead mt-6 max-w-[36rem] text-ink-soft" data-reveal>{intro}</p>
+      <ul class="mt-9 divide-y divide-line border-y border-line">
+        {
+          items.map((it) => (
+            <li class="flex items-start gap-4 py-4" data-reveal>
+              <span class:list={['mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full', surface === 'paper' ? 'bg-concrete' : 'bg-paper', 'text-orange-deep']}>
+                <Icon name={icon} size={14} aria-hidden="true" />
+              </span>
+              <span class="text-lg">
+                {it.text}
+                {it.href && <>{' '}<a class="link-arrow min-h-10" href={it.href}>{it.linkLabel}</a></>}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+      {link && <p class="mt-9" data-reveal><a class="link-arrow text-lg" href={link.href}>{link.label}</a></p>}
+    </div>
+    <div class:list={['overflow-hidden rounded-[var(--radius-card)]', reverse && 'lg:order-1']} data-reveal>
+      <Media image={image} class="aspect-[4/3] lg:aspect-[4/5]" sizes="(min-width: 1024px) 45vw, 100vw" widths={[480, 800, 1200]} parallax />
+    </div>
+  </div>
+</section>

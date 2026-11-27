@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import { cities, services, site, cta } from '../data/site';
+---
+
+<BaseLayout
+  title="Page not found | Superior Striping"
+  description="This page doesn't exist. Find sealcoating, striping and asphalt repair services across the Treasure Valley."
+  namespace="404"
+  noindex
+>
+  <section class="bg-asphalt pb-24 pt-40 text-paper">
+    <div class="site-container">
+      <h1 class="h-display max-w-[14ch]">This page isn't on our map</h1>
+      <span class="mt-7 block h-[7px] w-48 rounded-[1px] bg-orange" aria-hidden="true"></span>
+      <p class="mt-8 max-w-xl text-lg text-paper/80">
+        The link may be old or mistyped. Start from one of our services or call us at
+        <a class="font-semibold text-paper underline" href={site.phoneHref}>{site.phone}</a>.
+      </p>
+      <div class="mt-10"><Button href="/" label="Back to the homepage" /></div>
+    </div>
+  </section>
+  <section class="section-y">
+    <div class="site-container grid gap-12 md:grid-cols-2">
+      <div>
+        <h2 class="h-card">Services</h2>
+        <ul class="mt-5 space-y-2">{services.map((s) => <li><a class="link-arrow" href={s.href}>{s.name}</a></li>)}</ul>
+      </div>
+      <div>
+        <h2 class="h-card">Areas we serve</h2>
+        <ul class="mt-5 grid grid-cols-2 gap-2">{cities.map((c) => <li><a class="link-arrow" href={c.href}>{c.name}, ID</a></li>)}</ul>
+        <div class="mt-10"><Button href={cta.href} label={cta.label} variant="dark" /></div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

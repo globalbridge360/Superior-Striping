@@ -1,0 +1,243 @@
+---
+import Pattern from '../Pattern.astro';
+import { Icon } from 'astro-icon/components';
+import Badge from '../Badge.astro';
+import { site, platforms } from '../../data/site';
+
+// Reseñas reales publicadas en Google (mostradas hoy en el sitio actual). Texto literal.
+const reviews = [
+  {
+    name: 'Jim Z.',
+    initials: 'JZ',
+    quote: 'I’ve had many asphalt sealers do work for me but this one is the best! Did a great job of filling the cracks and the sealer they use is superb!',
+  },
+  {
+    name: 'Tyler Stapleton',
+    initials: 'TS',
+    quote: 'Scott came out and took care of our business. Definitely impressed by his work. They went above and beyond our expectations to meet our actual needs.',
+  },
+  {
+    name: 'Keith Bucher',
+    initials: 'KB',
+    quote: 'Scott did a great job on sealing the cracks on my driveway. Show up when he said he would and left the project clean and complete.',
+  },
+  {
+    name: 'Antonio Granados',
+    initials: 'AG',
+    quote: 'Scott was great to work with! Great pricing and flexible to make things happen fast.',
+  },
+  {
+    name: 'Robert Dickerson',
+    initials: 'RD',
+    quote: 'Superior Striping (Scott Mitchell) recently repaired our driveway in Weiser. They did a great job and were very easy to work with. I highly recommended Superior Striping.',
+  },
+  {
+    name: 'Kenneth Coleman',
+    initials: 'KC',
+    quote: 'He was professional, reliable, and the finished work looks excellent. It’s clear he takes pride in doing quality work. I highly recommend Scott and Superior Striping.',
+  },
+];
+---
+
+<section class="section-y relative overflow-hidden bg-concrete isolate" aria-labelledby="reviews-title" data-reviews>
+  <Pattern kind="asphalt" fade="center" />
+  <div class="site-container relative flex flex-col items-center text-center">
+    <Badge>Reviews</Badge>
+    <h2 id="reviews-title" class="sr-only">What customers say about Superior Striping</h2>
+
+    <a
+      href={site.googleProfileUrl}
+      target="_blank"
+      rel="noopener"
+      class="mt-8 inline-flex items-center gap-3 rounded-full bg-paper py-2 pl-2 pr-5 text-sm shadow-[0_1px_0_rgb(25_39_48/0.06)]"
+    >
+      <span class="grid h-8 w-8 place-items-center rounded-full border border-line bg-white">
+        <Icon name="logos:google-icon" size={16} aria-hidden="true" />
+      </span>
+      <span class="font-semibold">{site.rating.value}</span>
+      <span class="flex text-orange" aria-hidden="true">
+        {Array.from({ length: 5 }).map(() => <Icon name="ph:star-fill" size={14} />)}
+      </span>
+      <span class="text-ink-soft">{site.rating.count} Google reviews</span>
+    </a>
+
+    <div class="review-stack mt-10 max-w-[52rem]" aria-live="off">
+      {
+        reviews.map((r, i) => (
+          <figure role="tabpanel" id={`review-${i}`} aria-labelledby={`review-tab-${i}`} class="review-panel" data-active={i === 0 ? 'true' : 'false'} aria-hidden={i === 0 ? undefined : 'true'}>
+            <blockquote class="font-display text-[1.6rem] font-medium leading-[1.2] tracking-[-0.01em] md:text-[2.4rem]">
+              <p>&ldquo;{r.quote}&rdquo;</p>
+            </blockquote>
+            <figcaption class="mt-6 flex items-center justify-center gap-2 text-ink-soft">
+              <span class="font-semibold text-ink">{r.name}</span>
+              <span aria-hidden="true">·</span>
+              <Icon name="logos:google-icon" size={14} aria-hidden="true" />
+              <span class="text-sm">Google review</span>
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+
+    <div role="tablist" aria-label="Customer reviews" class="mt-8 flex flex-nowrap justify-center gap-1.5 sm:flex-wrap sm:gap-3">
+      {
+        reviews.map((r, i) => (
+          <button
+            type="button"
+            role="tab"
+            id={`review-tab-${i}`}
+            aria-controls={`review-${i}`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            tabindex={i === 0 ? 0 : -1}
+            class:list={['review-tab', i >= 5 && 'max-sm:!hidden']}
+          >
+            <span class="relative grid h-12 w-12 place-items-center rounded-full bg-ink text-sm font-bold text-paper">
+              {r.initials}
+              <span class="absolute -bottom-0.5 -right-0.5 grid h-5 w-5 place-items-center rounded-full bg-white">
+                <Icon name="logos:google-icon" size={10} aria-hidden="true" />
+              </span>
+            </span>
+            <span class="sr-only">Review by {r.name}</span>
+          </button>
+        ))
+      }
+    </div>
+
+    <!-- Hub de plataformas: dónde más encontrar y reseñar a Superior Striping -->
+    <div class="mt-20 w-full max-w-[64rem] rounded-[1.5rem] border border-line bg-paper p-6 text-left md:p-8" data-reveal>
+      <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between md:gap-5">
+        <div class="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+          <ul class="flex -space-x-3" aria-label="Superior Striping on review sites and social media">
+            {
+              platforms.map((p) => (
+                <li class="platform-avatar">
+                  <a
+                    href={p.href}
+                    target="_blank"
+                    rel="noopener"
+                    aria-describedby={`platform-tip-${p.name.toLowerCase()}`}
+                    class="grid h-11 w-11 place-items-center rounded-full border-2 border-paper bg-white shadow-[0_1px_2px_rgb(25_39_48/0.12)]"
+                    style={`color:${p.color}`}
+                  >
+                    {p.icon ? <Icon name={p.icon} size={20} aria-hidden="true" /> : <span class="text-[0.8125rem] font-extrabold tracking-tight" aria-hidden="true">Angi</span>}
+                    <span class="sr-only">{p.name} (opens in a new tab)</span>
+                  </a>
+                  <span id={`platform-tip-${p.name.toLowerCase()}`} role="tooltip" class="platform-tip">
+                    <span class="block font-semibold">{p.name}</span>
+                    <span class="block text-paper/70">{p.note}</span>
+                  </span>
+                </li>
+              ))
+            }
+          </ul>
+          <p class="leading-tight">
+            <span class="block font-display text-[1.375rem] font-medium">Find us across the web</span>
+            <span class="mt-1 block text-sm text-ink-soft">Read what customers wrote, or leave a review of your own.</span>
+          </p>
+        </div>
+        <a href={site.googleReviewUrl} target="_blank" rel="noopener" class="btn-pill w-full justify-between sm:w-auto sm:self-start md:self-auto" data-variant="dark">
+          <span class="btn-pill__text"><span>Leave a Google review</span><span aria-hidden="true">Leave a Google review</span></span>
+          <span class="btn-pill__dot"><Icon name="ph:star-fill" size={16} aria-hidden="true" /></span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Todas las reseñas ocupan la misma celda: la caja toma la altura de la más larga; la saliente se desvanece y luego entra la nueva */
+  .review-stack {
+    display: grid;
+    align-items: center;
+  }
+  .review-panel {
+    grid-area: 1 / 1;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.35s ease,
+      visibility 0s linear 0.35s;
+  }
+  .review-panel[data-active='true'] {
+    opacity: 1;
+    visibility: visible;
+    /* Entra cuando la anterior ya salió: nunca se ven dos textos encimados */
+    transition:
+      opacity 0.45s ease 0.35s,
+      visibility 0s;
+  }
+  .review-tab {
+    border-radius: 999px;
+    padding: 3px;
+    border: 2px solid transparent;
+    opacity: 0.55;
+    transition:
+      opacity 0.3s,
+      border-color 0.3s,
+      transform 0.3s var(--ease-out-quart);
+  }
+  .review-tab:hover {
+    opacity: 0.85;
+  }
+  .review-tab[aria-selected='true'] {
+    opacity: 1;
+    border-color: var(--color-orange);
+  }
+  .platform-avatar {
+    position: relative;
+  }
+  .platform-avatar a {
+    position: relative;
+    transition: transform 0.3s var(--ease-out-quart);
+  }
+  .platform-avatar:hover,
+  .platform-avatar:focus-within {
+    z-index: 2;
+  }
+  .platform-avatar:hover a,
+  .platform-avatar a:focus-visible {
+    transform: translateY(-3px);
+  }
+  .platform-avatar a:focus-visible {
+    outline: 2px solid var(--color-orange);
+    outline-offset: 2px;
+  }
+  .platform-tip {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    translate: -50% 4px;
+    width: max-content;
+    max-width: 14rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.6rem;
+    background: var(--color-ink);
+    color: var(--color-paper);
+    font-size: 0.8125rem;
+    line-height: 1.3;
+    text-align: center;
+    pointer-events: none;
+    opacity: 0;
+    transition:
+      opacity 0.2s,
+      translate 0.2s var(--ease-out-quart);
+  }
+  .platform-tip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border: 5px solid transparent;
+    border-top-color: var(--color-ink);
+  }
+  .platform-avatar:hover .platform-tip,
+  .platform-avatar:focus-within .platform-tip {
+    opacity: 1;
+    translate: -50% 0;
+  }
+  .review-tab:active {
+    transform: scale(0.94);
+  }
+</style>

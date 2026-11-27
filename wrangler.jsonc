@@ -1,0 +1,15 @@
+{
+  // Cloudflare Workers con Static Assets: sirve dist/ (sitio Astro estático).
+  // Docs: https://developers.cloudflare.com/workers/static-assets/
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "superior-striping",
+  "compatibility_date": "2026-11-27",
+  "assets": {
+    "directory": "./dist",
+    // Las URLs terminan en barra (trailingSlash: 'always' en astro.config.mjs)
+    "html_handling": "auto-trailing-slash",
+    // Sirve dist/404.html con estado 404
+    "not_found_handling": "404-page"
+  },
+  "observability": { "enabled": true }
+}

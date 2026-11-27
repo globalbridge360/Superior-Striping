@@ -1,0 +1,98 @@
+---
+// Hero de página interior: foto a sangre con velo asfalto, más bajo que el de la home, mismo H1, raya naranja y CTA.
+// Reutiliza los ganchos de entrada del hero (data-hero-*), así la barra móvil se esconde mientras se ve.
+import { Icon } from 'astro-icon/components';
+import Button from '../Button.astro';
+import Media from '../Media.astro';
+import type { SiteImage } from '../../data/images';
+import { cta, site } from '../../data/site';
+
+interface Props {
+  title: string;
+  lead: string;
+  /** Migas: la última es la página actual y no lleva enlace */
+  crumbs?: { label: string; href?: string }[];
+  /** Datos cortos bajo el CTA (2 a 4) */
+  facts?: string[];
+  /** Foto de fondo a sangre. Original de 1920 px de ancho o más: se ve a pantalla completa. */
+  image?: SiteImage;
+  /** Encuadre de la foto (clase object-position) */
+  position?: string;
+}
+const { title, lead, crumbs = [], facts = [], image, position = 'object-center' } = Astro.props;
+
+const MIN_WIDTH = 1920;
+if (image && image.src.width < MIN_WIDTH) {
+  throw new Error(`PageHero: la foto mide ${image.src.width}px de ancho y el fondo del hero necesita ${MIN_WIDTH}px o más. Usa otra foto o una versión de mayor calidad.`);
+}
+---
+
+<section
+  data-hero
+  class="relative isolate flex min-h-[34rem] overflow-hidden bg-asphalt text-paper md:min-h-[min(46rem,78dvh)]"
+  aria-labelledby="page-title"
+>
+  {
+    image && (
+      <>
+        <div class="absolute inset-0 -z-20" data-hero-media>
+          <Media image={image} class="h-full w-full" imgClass={position} sizes="100vw" widths={[640, 1024, 1600, 2160]} priority />
+        </div>
+        <div class="hero-shade absolute inset-0 -z-10" aria-hidden="true" />
+      </>
+    )
+  }
+  <div class="site-container flex flex-col justify-end pb-12 pt-32 md:pb-16 md:pt-40">
+    {
+      crumbs.length > 0 && (
+        <nav aria-label="Breadcrumb" data-hero-fade>
+          <ol class="flex flex-wrap items-center gap-2 text-sm text-paper/70">
+            {crumbs.map((c, i) => (
+              <li class="flex items-center gap-2">
+                {i > 0 && <Icon name="ph:caret-right-bold" size={12} aria-hidden="true" />}
+                {c.href ? <a class="inline-flex min-h-10 items-center hover:text-paper" href={c.href}>{c.label}</a> : <span aria-current="page" class="text-paper/90">{c.label}</span>}
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+    <h1 id="page-title" class="h-page mt-3 max-w-[15ch]" data-hero-title data-split>{title}</h1>
+    <span class="mt-7 block h-[7px] w-[min(22rem,60%)] origin-left rounded-[1px] bg-orange" data-hero-stripe aria-hidden="true"></span>
+    <p class="lead mt-8 max-w-[36rem] text-paper/90" data-hero-fade>{lead}</p>
+    <div class="mt-9 flex flex-wrap items-center gap-5" data-hero-fade>
+      <Button href={cta.href} label={cta.label} />
+      <a href={site.phoneHref} class="inline-flex min-h-11 items-center gap-2 font-semibold text-paper">
+        <Icon name="ph:phone-fill" size={20} class="text-orange" aria-hidden="true" />
+        {site.phone}
+      </a>
+    </div>
+    {
+      facts.length > 0 && (
+        <ul class="mt-10 flex flex-wrap gap-x-7 gap-y-3 border-t border-paper/20 pt-6 text-sm text-paper/90" data-hero-fade>
+          {facts.map((f) => (
+            <li class="flex items-center gap-2">
+              <Icon name="ph:check-circle-fill" size={18} class="text-orange" aria-hidden="true" />
+              {f}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  /* Igual que el hero de la home: la foto queda visible a la derecha y el texto se lee sobre asfalto */
+  .hero-shade {
+    background:
+      linear-gradient(90deg, color-mix(in srgb, var(--color-asphalt) 92%, transparent) 0%, color-mix(in srgb, var(--color-asphalt) 70%, transparent) 45%, color-mix(in srgb, var(--color-asphalt) 20%, transparent) 100%),
+      linear-gradient(0deg, color-mix(in srgb, var(--color-asphalt) 75%, transparent) 0%, transparent 45%),
+      linear-gradient(180deg, color-mix(in srgb, var(--color-asphalt) 70%, transparent) 0%, transparent 28%);
+  }
+  @media (max-width: 767px) {
+    .hero-shade {
+      background: linear-gradient(180deg, color-mix(in srgb, var(--color-asphalt) 60%, transparent) 0%, color-mix(in srgb, var(--color-asphalt) 80%, transparent) 40%, color-mix(in srgb, var(--color-asphalt) 90%, transparent) 100%);
+    }
+  }
+</style>

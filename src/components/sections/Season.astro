@@ -1,0 +1,63 @@
+---
+import { Picture } from 'astro:assets';
+import Button from '../Button.astro';
+import Media from '../Media.astro';
+import { images } from '../../data/images';
+import { cta } from '../../data/site';
+import logo from '../../assets/img/logo-superior-striping.png';
+import type { SiteImage } from '../../data/images';
+
+interface Props {
+  id?: string;
+  title?: string;
+  text?: string;
+  image?: SiteImage;
+  /** Logotipo gigante al pie de la foto (recurso de la home) */
+  showLogo?: boolean;
+}
+const {
+  id = 'season',
+  title = "Plan next season's sealcoat now",
+  text = 'Sealcoating season in Idaho runs from May 15 to October 15, and our calendar fills up by June. Lots that get walked and quoted over the winter go first.',
+  image = images.seasonLot,
+  showLogo = true,
+} = Astro.props;
+---
+
+<section class="section-y" aria-labelledby={`${id}-title`}>
+  <div class="site-container">
+    <div class:list={['relative isolate overflow-hidden rounded-[var(--radius-card)] bg-asphalt', showLogo ? 'min-h-[640px] lg:min-h-[820px]' : 'min-h-[640px] lg:min-h-[600px]']}>
+      <Media
+        image={image}
+        class="absolute inset-0 -z-10"
+        sizes="(min-width: 1320px) 1260px, 100vw"
+        widths={[640, 1024, 1600, 2160]}
+        parallax
+      />
+      <div class="absolute inset-0 -z-10 bg-gradient-to-t from-asphalt/70 via-transparent to-transparent" aria-hidden="true"></div>
+
+      <div class="relative z-10 m-4 max-w-[25rem] rounded-[1rem] bg-paper p-7 md:m-8 md:p-9" data-reveal>
+        <h2 id={`${id}-title`} class="h-card">{title}</h2>
+        <p class="mt-4 text-ink-soft">{text}</p>
+        <Button href={cta.href} label={cta.label} variant="dark" class="mt-7" />
+      </div>
+
+      {
+        showLogo && (
+        <div class="pointer-events-none absolute inset-x-6 bottom-6 md:inset-x-10 md:bottom-10" aria-hidden="true" data-reveal>
+          <Picture
+            src={logo}
+            alt=""
+            widths={[800, 1400]}
+            sizes="(min-width: 1320px) 1180px, 90vw"
+            formats={['avif', 'webp']}
+            fallbackFormat="png"
+            loading="lazy"
+            class="h-auto w-full opacity-90 [filter:brightness(0)_invert(1)]"
+          />
+        </div>
+        )
+      }
+    </div>
+  </div>
+</section>

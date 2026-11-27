@@ -1,0 +1,47 @@
+---
+// Proceso numerado de cualquier longitud (4 a 8 pasos), en filas. Process.astro queda para 3 pasos con ilustración.
+import Badge from '../Badge.astro';
+import Pattern from '../Pattern.astro';
+
+interface Props {
+  id: string;
+  badge?: string;
+  title: string;
+  intro?: string;
+  /** Frase destacada bajo la cabecera */
+  quote?: string;
+  steps: { title: string; text: string }[];
+}
+const { id, badge, title, intro, quote, steps } = Astro.props;
+---
+
+<section class="section-y relative isolate" aria-labelledby={`${id}-title`}>
+  <Pattern kind="topo" fade="top-right" class="pattern--strong" />
+  <div class="site-container grid gap-12 lg:grid-cols-[1fr_1.5fr] lg:gap-16">
+    <div class="lg:sticky lg:top-32 lg:self-start">
+      {badge && <Badge>{badge}</Badge>}
+      <h2 id={`${id}-title`} class:list={['h-section max-w-[12ch]', badge && 'mt-5']} data-split>{title}</h2>
+      {intro && <p class="mt-6 max-w-sm text-lg text-ink-soft" data-reveal>{intro}</p>}
+      {
+        quote && (
+          <p class="mt-8 max-w-sm rounded-[var(--radius-card)] bg-paper p-6 font-display text-[1.375rem] font-medium leading-tight" data-reveal>
+            {quote}
+          </p>
+        )
+      }
+    </div>
+    <ol class="grid gap-4">
+      {
+        steps.map((s, i) => (
+          <li class="grid gap-x-8 gap-y-2 rounded-[var(--radius-card)] bg-paper p-6 md:grid-cols-[4rem_1fr] md:p-8" data-reveal>
+            <span class="font-display text-[2rem] font-medium leading-none text-orange-deep md:row-span-2" aria-hidden="true">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <h3 class="h-card">{s.title}</h3>
+            <p class="max-w-[52ch] text-ink-soft md:col-start-2">{s.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>

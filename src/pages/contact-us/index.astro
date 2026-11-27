@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Contact from '../../components/sections/Contact.astro';
+import Location from '../../components/sections/Location.astro';
+import { businessNode, BUSINESS_ID } from '../../data/schema';
+import { getImage } from 'astro:assets';
+import logo from '../../assets/img/logo-superior-striping.png';
+import { images } from '../../data/images';
+
+const site = 'https://superior-striping.com';
+const pageUrl = `${site}/contact-us/`;
+const logoImg = await getImage({ src: logo, width: 600, format: 'png' });
+const heroImg = await getImage({ src: images.heroPoster.src, width: 1600, format: 'jpg' });
+const title = 'Get a Free Asphalt Sealcoating & Striping Estimate | Superior Striping';
+const description =
+  'Request a free estimate for parking lot sealcoating, striping, crack filling or asphalt repair in Nampa, Boise and the Treasure Valley. About 60 seconds.';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    businessNode(new URL(logoImg.src, site).toString(), new URL(heroImg.src, site).toString()),
+    {
+      '@type': 'ContactPage',
+      '@id': `${pageUrl}#webpage`,
+      url: pageUrl,
+      name: title,
+      description,
+      isPartOf: { '@id': `${site}/#website` },
+      about: { '@id': BUSINESS_ID },
+      inLanguage: 'en-US',
+    },
+  ],
+};
+---
+
+<BaseLayout title={title} description={description} namespace="contact" jsonLd={jsonLd}>
+  <div class="bg-concrete pt-24 md:pt-28"></div>
+  <Contact headingLevel="h1" />
+  <Location />
+</BaseLayout>

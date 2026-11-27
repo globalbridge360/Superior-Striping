@@ -1,0 +1,41 @@
+---
+// Metadatos por página: title, description, canonical, robots, Open Graph, Twitter y JSON-LD.
+// Todo va marcado con data-head para que Barba pueda reemplazarlo al cambiar de página.
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  image?: string;
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown>;
+}
+
+const { title, description, path, image = '/og/superior-striping-og.jpg', noindex = false, jsonLd } = Astro.props;
+const site = Astro.site?.toString().replace(/\/$/, '') ?? 'https://superior-striping.com';
+const canonical = new URL(path, site).toString();
+const ogImage = new URL(image, site).toString();
+const robots = noindex
+  ? 'noindex, follow'
+  : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
+---
+
+<title data-head>{title}</title>
+<meta data-head name="description" content={description} />
+<link data-head rel="canonical" href={canonical} />
+<meta data-head name="robots" content={robots} />
+
+<meta data-head property="og:type" content="website" />
+<meta data-head property="og:locale" content="en_US" />
+<meta data-head property="og:site_name" content="Superior Striping" />
+<meta data-head property="og:title" content={title} />
+<meta data-head property="og:description" content={description} />
+<meta data-head property="og:url" content={canonical} />
+<meta data-head property="og:image" content={ogImage} />
+<meta data-head property="og:image:width" content="1200" />
+<meta data-head property="og:image:height" content="630" />
+<meta data-head name="twitter:card" content="summary_large_image" />
+<meta data-head name="twitter:title" content={title} />
+<meta data-head name="twitter:description" content={description} />
+<meta data-head name="twitter:image" content={ogImage} />
+
+{jsonLd && <script data-head type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}

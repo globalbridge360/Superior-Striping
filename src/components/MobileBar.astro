@@ -1,0 +1,86 @@
+---
+// Barra fija inferior en móvil: presupuesto y llamada a un toque. Aparece al salir del hero (app.ts → mobileBar). Vive fuera de <main>, así persiste entre páginas.
+import { Icon } from 'astro-icon/components';
+import { site, cta } from '../data/site';
+---
+
+<nav class="mobile-bar" aria-label="Quick contact" data-mobile-bar data-hidden="true">
+  <a href={cta.href} class="mobile-bar__cta">
+    {cta.label}
+    <Icon name="ph:arrow-right-bold" size={18} aria-hidden="true" />
+  </a>
+  <a href={site.phoneHref} class="mobile-bar__call">
+    <Icon name="ph:phone-fill" size={20} aria-hidden="true" />
+    <span>Call</span>
+    <span class="sr-only">{site.phone}</span>
+  </a>
+</nav>
+
+<style>
+  .mobile-bar {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 60;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.5rem;
+    padding: 0.625rem 0.75rem calc(0.625rem + env(safe-area-inset-bottom));
+    background: rgb(255 255 255 / 0.92);
+    border-top: 1px solid var(--color-line);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition:
+      transform 0.45s var(--ease-out-expo),
+      visibility 0s;
+  }
+  /* Oculta mientras el hero (que ya tiene estos dos botones) está a la vista */
+  .mobile-bar[data-hidden='true'] {
+    transform: translateY(110%);
+    visibility: hidden;
+    transition:
+      transform 0.35s var(--ease-out-quart),
+      visibility 0s linear 0.35s;
+  }
+  @media (min-width: 1024px) {
+    .mobile-bar {
+      display: none;
+    }
+  }
+  :global(html[data-theme='dark']) .mobile-bar {
+    background: rgb(14 21 25 / 0.9);
+  }
+  .mobile-bar a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 3.25rem;
+    border-radius: 999px;
+    font-weight: 600;
+    transition: transform 0.15s;
+  }
+  .mobile-bar a:active {
+    transform: scale(0.97);
+  }
+  .mobile-bar__cta {
+    background: var(--color-orange);
+    color: var(--color-asphalt);
+    padding-inline: 1.25rem;
+  }
+  .mobile-bar__call {
+    background: var(--btn-bg, #11181d);
+    color: var(--btn-fg, #f8f9f9);
+    padding-inline: 1.25rem;
+  }
+  .mobile-bar a:focus-visible {
+    outline: 2px solid var(--color-asphalt);
+    outline-offset: 2px;
+  }
+  /* Espacio para que la barra no tape el final del footer */
+  @media (max-width: 1023px) {
+    :global(body) {
+      padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
+    }
+  }
+</style>

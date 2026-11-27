@@ -1,0 +1,22 @@
+---
+// Botón en píldora: el texto rueda hacia arriba y la flecha gira al pasar el cursor.
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  href: string;
+  label: string;
+  variant?: 'orange' | 'dark' | 'light';
+  icon?: string;
+  class?: string;
+}
+
+const { href, label, variant = 'orange', icon = 'ph:arrow-right-bold', class: className = '' } = Astro.props;
+---
+
+<a href={href} class:list={['btn-pill', className]} data-variant={variant === 'orange' ? undefined : variant}>
+  <span class="btn-pill__text">
+    <span>{label}</span>
+    <span aria-hidden="true">{label}</span>
+  </span>
+  <span class="btn-pill__dot" aria-hidden="true"><Icon name={icon} size={18} /></span>
+</a>

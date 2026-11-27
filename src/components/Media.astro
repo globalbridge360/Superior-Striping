@@ -1,0 +1,59 @@
+---
+// Imagen de contenido: siempre <figure> + <picture> (AVIF, WebP, JPG) + alt + descripción.
+// La descripción va en <figcaption>; `caption="hidden"` la deja solo para lectores de pantalla
+// cuando el diseño no tiene sitio visible (p. ej. fondos de tarjeta con texto propio).
+import { Picture } from 'astro:assets';
+import type { SiteImage } from '../data/images';
+
+interface Props {
+  image: SiteImage;
+  widths?: number[];
+  sizes?: string;
+  class?: string;
+  imgClass?: string;
+  caption?: 'visible' | 'hidden' | 'none';
+  captionClass?: string;
+  priority?: boolean;
+  parallax?: boolean;
+  /** png para recortes con transparencia */
+  fallbackFormat?: 'jpg' | 'png';
+}
+
+const {
+  image,
+  widths = [480, 800, 1200, 1600],
+  sizes = '100vw',
+  class: className = '',
+  imgClass = '',
+  caption = 'hidden',
+  captionClass = '',
+  priority = false,
+  parallax = false,
+  fallbackFormat = 'jpg',
+} = Astro.props;
+
+const usable = widths.filter((w) => w <= image.src.width);
+const finalWidths = usable.length ? usable : [image.src.width];
+---
+
+<figure class:list={['media-fill overflow-hidden', !/\b(absolute|fixed|sticky)\b/.test(className) && 'relative', className]}>
+  <Picture
+    src={image.src}
+    alt={image.alt}
+    widths={finalWidths}
+    sizes={sizes}
+    formats={['avif', 'webp']}
+    fallbackFormat={fallbackFormat}
+    quality={64}
+    loading={priority ? 'eager' : 'lazy'}
+    decoding={priority ? 'sync' : 'async'}
+    fetchpriority={priority ? 'high' : 'auto'}
+    class:list={[imgClass, parallax && 'will-change-transform']}
+    data-parallax={parallax ? '' : undefined}
+  />
+  {
+    caption !== 'none' && (
+      <figcaption class:list={[caption === 'hidden' ? 'sr-only' : captionClass]}>{image.description}</figcaption>
+    )
+  }
+</figure>

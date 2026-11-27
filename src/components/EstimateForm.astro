@@ -1,0 +1,351 @@
+---
+// Formulario de presupuesto inspirado en JP&E: una pregunta a la vez, con ilustraciones que ayudan
+// a elegir. Sin JS se ven todas las preguntas juntas y el envío funciona igual (Netlify Forms).
+import { Icon } from 'astro-icon/components';
+import Media from './Media.astro';
+import { illustrations as ill } from '../data/illustrations';
+import { cities, site } from '../data/site';
+
+const services = [
+  { value: 'Sealcoating', label: 'Sealcoating', image: ill.sealcoating },
+  { value: 'Striping', label: 'Line striping', image: ill.striping },
+  { value: 'Crack filling', label: 'Crack filling', image: ill.crack },
+  { value: 'Asphalt repair', label: 'Repair or patching', image: ill.patching },
+  { value: 'Bollards and blocks', label: 'Bollards or blocks', image: ill.bollards },
+  { value: 'Not sure', label: 'Not sure yet', image: ill.unsure },
+];
+const properties = [
+  { value: 'Business or retail lot', image: ill.propRetail },
+  { value: 'Industrial or warehouse', image: ill.propIndustrial },
+  { value: 'Church or school', image: ill.propChurch },
+  { value: 'HOA or apartments', image: ill.propHoa },
+  { value: 'Home driveway', image: ill.propDriveway },
+  { value: 'Something else', image: ill.propOther },
+];
+const sizes = [
+  { value: 'Driveway or small lot', hint: 'Under 5,000 sq ft, about 15 stalls' },
+  { value: 'Medium lot', hint: '5,000 to 20,000 sq ft, up to about 60 stalls' },
+  { value: 'Large lot', hint: '20,000 to 50,000 sq ft' },
+  { value: 'Very large lot', hint: 'Over 50,000 sq ft' },
+  { value: 'Not sure', hint: 'We measure it when we walk the lot' },
+];
+const timings = [
+  { value: 'As soon as possible', image: ill.timeAsap },
+  { value: 'Within the next month', image: ill.timeMonth },
+  { value: 'Before next season', image: ill.timeSeason },
+  { value: 'Just getting prices', image: ill.timePrices },
+];
+const total = 6;
+---
+
+<div class="estimate relative" data-estimate-root>
+  <form
+    name="estimate"
+    method="POST"
+    action="/thank-you/"
+    data-netlify="true"
+    netlify-honeypot="company-website"
+    class="estimate-form"
+    data-estimate
+    novalidate
+  >
+    <input type="hidden" name="form-name" value="estimate" />
+    <p class="hidden">
+      <label>Leave this field empty <input name="company-website" tabindex="-1" autocomplete="off" /></label>
+    </p>
+
+    <div class="mb-6 hidden" data-progress>
+      <div class="flex justify-between text-sm text-ink-muted">
+        <span>Question <span data-step-num>1</span> of {total}</span>
+        <span>About 60 seconds</span>
+      </div>
+      <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-line">
+        <span class="block h-full w-full origin-left rounded-full bg-orange transition-transform duration-500 ease-[var(--ease-out-expo)]" data-progress-bar style="transform: scaleX(0.1667)"></span>
+      </div>
+    </div>
+
+    <!-- 1. Servicio -->
+    <fieldset class="step" data-step>
+      <legend class="step-q">What does your pavement need?</legend>
+      <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        {
+          services.map((s, i) => (
+            <label class="tile tile--ill">
+              <input type="radio" name="service" value={s.value} class="sr-only" required={i === 0} />
+              <Media image={s.image} class="mx-auto h-20 w-20 md:h-24 md:w-24" sizes="96px" widths={[192]} fallbackFormat="png" imgClass="!object-contain" />
+              <span class="mt-1 block text-[0.95rem] font-medium leading-tight">{s.label}</span>
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+
+    <!-- 2. Tipo de propiedad -->
+    <fieldset class="step" data-step>
+      <legend class="step-q">What kind of property is it?</legend>
+      <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        {
+          properties.map((p, i) => (
+            <label class="tile">
+              <input type="radio" name="property" value={p.value} class="sr-only" required={i === 0} />
+              <Media image={p.image} class="mx-auto h-20 w-20 md:h-24 md:w-24" sizes="96px" widths={[192]} fallbackFormat="png" imgClass="!object-contain" />
+              <span class="mt-3 block text-[0.95rem] font-medium leading-tight">{p.value}</span>
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+
+    <!-- 3. Tamaño -->
+    <fieldset class="step" data-step>
+      <legend class="step-q">About how big is the area?</legend>
+      <div class="grid gap-2.5">
+        {
+          sizes.map((s, i) => (
+            <label class="row">
+              <input type="radio" name="size" value={s.value} class="sr-only" required={i === 0} />
+              <span class="row-dot" aria-hidden="true"></span>
+              <span>
+                <span class="block font-semibold">{s.value}</span>
+                <span class="block text-sm text-ink-muted">{s.hint}</span>
+              </span>
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+
+    <!-- 4. Cuándo -->
+    <fieldset class="step" data-step>
+      <legend class="step-q">When would you like it done?</legend>
+      <div class="grid grid-cols-2 gap-3">
+        {
+          timings.map((t, i) => (
+            <label class="tile">
+              <input type="radio" name="timing" value={t.value} class="sr-only" required={i === 0} />
+              <Media image={t.image} class="mx-auto h-20 w-20 md:h-24 md:w-24" sizes="96px" widths={[192]} fallbackFormat="png" imgClass="!object-contain" />
+              <span class="mt-3 block text-[0.95rem] font-medium leading-tight">{t.value}</span>
+            </label>
+          ))
+        }
+      </div>
+      <p class="mt-4 flex items-center gap-2 text-sm text-ink-muted">
+        <Icon name="ph:thermometer-simple" size={16} aria-hidden="true" />
+        Sealcoating season runs May 15 to October 15. Striping and repairs run longer.
+      </p>
+    </fieldset>
+
+    <!-- 5. Dónde -->
+    <fieldset class="step" data-step>
+      <legend class="step-q">Where is the property?</legend>
+      <div class="flex flex-wrap gap-2">
+        {
+          [...cities.map((c) => c.name), 'Somewhere else'].map((name, i) => (
+            <label class="chip">
+              <input type="radio" name="city" value={name} class="sr-only" required={i === 0} />
+              <Icon name="ph:map-pin-fill" size={14} aria-hidden="true" />
+              {name}
+            </label>
+          ))
+        }
+      </div>
+      <label class="field mt-5">
+        <span>Address or business name <span class="text-ink-muted">(optional)</span></span>
+        <input type="text" name="address" autocomplete="street-address" placeholder="e.g. 123 Main St, or the store name" />
+      </label>
+    </fieldset>
+
+    <!-- 6. Contacto -->
+    <fieldset class="step" data-step>
+      <legend class="step-q">Where should we send your estimate?</legend>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <label class="field">
+          <span>Your name</span>
+          <input type="text" name="name" autocomplete="name" required />
+        </label>
+        <label class="field">
+          <span>Phone</span>
+          <input type="tel" name="phone" autocomplete="tel" inputmode="tel" required />
+        </label>
+        <label class="field sm:col-span-2">
+          <span>Email <span class="text-ink-muted">(optional)</span></span>
+          <input type="email" name="email" autocomplete="email" />
+        </label>
+        <label class="field sm:col-span-2">
+          <span>Anything we should know? <span class="text-ink-muted">(optional)</span></span>
+          <textarea name="notes" rows="3" placeholder="Gate codes, best time to call, photos you can text us..."></textarea>
+        </label>
+      </div>
+      <p class="mt-4 text-xs leading-relaxed text-ink-muted">
+        By sending this you agree we may call or text you about your estimate. See our
+        <a class="underline" href="/sms-terms-and-conditions/">SMS terms</a>.
+      </p>
+    </fieldset>
+
+    <p class="mt-4 hidden rounded-xl bg-orange/10 px-4 py-3 text-sm text-ink" role="alert" data-estimate-error></p>
+
+    <div class="mt-8 flex items-center justify-between gap-4">
+      <button type="button" class="nav-back hidden" data-back>
+        <Icon name="ph:arrow-left" size={16} aria-hidden="true" /> Back
+      </button>
+      <span></span>
+      <button type="button" class="btn-pill hidden disabled:opacity-40" data-variant="dark" data-next>
+        <span class="btn-pill__text"><span>Continue</span><span aria-hidden="true">Continue</span></span>
+        <span class="btn-pill__dot"><Icon name="ph:arrow-right-bold" size={16} aria-hidden="true" /></span>
+      </button>
+      <button type="submit" class="btn-pill" data-submit>
+        <span class="btn-pill__text"><span>Send my request</span><span aria-hidden="true">Send my request</span></span>
+        <span class="btn-pill__dot"><Icon name="ph:paper-plane-tilt-fill" size={16} aria-hidden="true" /></span>
+      </button>
+    </div>
+  </form>
+
+  <div class="hidden py-6 text-center" role="status" tabindex="-1" data-estimate-done>
+    <span class="mx-auto grid h-16 w-16 place-items-center rounded-full bg-orange text-asphalt">
+      <Icon name="ph:check-bold" size={30} aria-hidden="true" />
+    </span>
+    <p class="mt-6 font-display text-[2rem] font-medium leading-tight">Request sent</p>
+    <p class="mx-auto mt-3 max-w-sm text-ink-soft">
+      Thanks. We'll call you within one business day to set a time to walk the lot. Need us sooner? Call
+      <a class="font-semibold text-ink underline" href={site.phoneHref}>{site.phone}</a>.
+    </p>
+  </div>
+</div>
+
+<style>
+  .step-q {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1.15;
+    margin-bottom: 1.25rem;
+  }
+  .step + .step {
+    margin-top: 2.5rem;
+  }
+  .estimate-form.is-stepper .step + .step {
+    margin-top: 0;
+  }
+  .estimate-form.is-stepper .step:not(.is-current) {
+    display: none;
+  }
+  .tile {
+    position: relative;
+    display: block;
+    cursor: pointer;
+    text-align: center;
+    padding: 1.1rem 0.75rem;
+    border: 1px solid var(--color-line);
+    border-radius: 1rem;
+    background: var(--color-white);
+    transition:
+      border-color 0.25s,
+      box-shadow 0.25s,
+      transform 0.2s var(--ease-out-quart);
+  }
+  .tile--ill {
+    padding: 0.6rem 0.6rem 1rem;
+  }
+  .tile:hover {
+    border-color: color-mix(in srgb, var(--color-ink) 35%, transparent);
+  }
+  .tile:active {
+    transform: scale(0.98);
+  }
+  .tile:has(:checked),
+  .row:has(:checked),
+  .chip:has(:checked) {
+    border-color: var(--color-orange);
+    box-shadow: 0 0 0 1px var(--color-orange);
+  }
+  .tile:has(:checked) {
+    background: rgb(238 106 31 / 0.06);
+  }
+  .tile:has(:focus-visible),
+  .row:has(:focus-visible),
+  .chip:has(:focus-visible) {
+    outline: 2px solid var(--color-orange);
+    outline-offset: 2px;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    cursor: pointer;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--color-line);
+    border-radius: 0.9rem;
+    background: var(--color-white);
+    transition: border-color 0.25s;
+  }
+  .row:hover {
+    border-color: color-mix(in srgb, var(--color-ink) 35%, transparent);
+  }
+  .row-dot {
+    width: 1.15rem;
+    height: 1.15rem;
+    flex-shrink: 0;
+    border-radius: 999px;
+    border: 2px solid var(--color-line);
+    transition: border 0.2s;
+  }
+  .row:has(:checked) .row-dot {
+    border: 6px solid var(--color-orange);
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    background: var(--color-white);
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+  .chip :global(svg) {
+    color: var(--color-orange);
+  }
+  .field {
+    display: grid;
+    gap: 0.4rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+  .field input,
+  .field textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--color-line);
+    border-radius: 0.8rem;
+    background: var(--color-white);
+    font-weight: 400;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+  }
+  .field input:focus,
+  .field textarea:focus {
+    outline: none;
+    border-color: var(--color-orange);
+    box-shadow: 0 0 0 3px rgb(238 106 31 / 0.18);
+  }
+  .field input[aria-invalid='true'] {
+    border-color: #c2410c;
+  }
+  .nav-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 600;
+    color: var(--color-ink-soft);
+    padding: 0.6rem 0.2rem;
+  }
+  .nav-back:hover {
+    color: var(--color-ink);
+  }
+  .estimate-form button.hidden,
+  .estimate-form .hidden {
+    display: none;
+  }
+</style>

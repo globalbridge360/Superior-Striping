@@ -1,0 +1,140 @@
+---
+import { Icon } from 'astro-icon/components';
+import Badge from '../Badge.astro';
+import Media from '../Media.astro';
+import { Picture } from 'astro:assets';
+import profilePhoto from '../../assets/img/instagram-profile.webp';
+import { instagramPosts, instagramProfile, instagramHandle } from '../../data/instagram';
+---
+
+<section class="section-y overflow-hidden bg-paper" aria-labelledby="instagram-title">
+  <div class="site-container">
+    <div class="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+      <div class="flex flex-col items-start gap-6">
+        <Badge>On Instagram</Badge>
+        <h2 id="instagram-title" class="h-section max-w-[14ch]" data-split>Straight from the job site</h2>
+      </div>
+      <a
+        href={instagramProfile}
+        target="_blank"
+        rel="noopener"
+        class="group flex items-center gap-4 self-start rounded-full border border-line bg-white py-2 pl-2 pr-2 md:self-auto"
+        data-reveal
+      >
+        <span class="ig-ring grid h-14 w-14 shrink-0 place-items-center rounded-full p-[2px]">
+          <Picture
+            src={profilePhoto}
+            alt="Superior Striping Instagram profile photo: a crew member in a yellow shirt and company cap pointing at the camera"
+            widths={[112, 168]}
+            sizes="52px"
+            formats={['avif', 'webp']}
+            fallbackFormat="jpg"
+            loading="lazy"
+            class="h-full w-full rounded-full object-cover"
+          />
+        </span>
+        <span class="leading-tight">
+          <span class="block font-semibold">{instagramHandle}</span>
+          <span class="text-sm text-ink-muted">Veteran-owned. Day-to-day Idaho asphalt.</span>
+        </span>
+        <span class="ml-2 inline-flex items-center gap-2 rounded-full bg-asphalt px-4 py-2.5 text-sm font-semibold text-paper transition-colors group-hover:bg-orange group-hover:text-asphalt">
+          <Icon name="simple-icons:instagram" size={14} aria-hidden="true" />
+          Follow
+        </span>
+        <span class="sr-only">(opens in a new tab)</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="ig-wrap mt-12 lg:mt-16">
+  <ul class="ig-grid">
+    {
+      instagramPosts.map((p) => (
+        <li class="ig-item" data-reveal>
+          <a href={p.url} target="_blank" rel="noopener" class="group relative block overflow-hidden rounded-[var(--radius-card)] bg-ink">
+            <Media
+              image={p.image}
+              class="aspect-[4/5]"
+              imgClass="transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:scale-[1.05]"
+              sizes="(min-width: 1024px) 25vw, (min-width: 640px) 40vw, 72vw"
+              widths={[320, 480, 640]}
+            />
+            <span class="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-asphalt/70 text-paper backdrop-blur">
+              <Icon name={p.type === 'reel' ? 'ph:play-fill' : 'ph:image-square-fill'} size={16} aria-hidden="true" />
+            </span>
+            <span class="ig-caption absolute inset-x-0 bottom-0 flex flex-col gap-3 p-5 text-paper">
+              <span class="line-clamp-3 text-[0.95rem] leading-snug">{p.caption}</span>
+              <span class="inline-flex items-center gap-2 text-sm font-semibold">
+                <Icon name="simple-icons:instagram" size={14} aria-hidden="true" />
+                {p.type === 'reel' ? 'Watch the reel' : 'View the post'}
+              </span>
+            </span>
+            <span class="sr-only">on Instagram (opens in a new tab)</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  </div>
+</section>
+
+<style>
+  .ig-ring {
+    background: conic-gradient(from 210deg, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5, #feda75);
+  }
+  .ig-grid {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(72vw, 18rem);
+    gap: 1rem;
+    overflow-x: auto;
+    padding-inline: 1.25rem;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .ig-item {
+    scroll-snap-align: start;
+  }
+  @media (min-width: 1024px) {
+    .ig-grid {
+      grid-auto-flow: row;
+      grid-template-columns: repeat(4, 1fr);
+      max-width: var(--container-site);
+      margin-inline: auto;
+      padding-inline: 2rem;
+      overflow: visible;
+    }
+  }
+  /* En escritorio la segunda fila asoma y se desvanece: hay más posts en el perfil */
+  @media (min-width: 1024px) {
+    .ig-wrap {
+      container-type: inline-size;
+    }
+    .ig-grid {
+      /* ancho de columna = (contenedor - padding 4rem - 3 gaps) / 4; alto 5:4; se ve fila 1 + 40% de la fila 2 */
+      --ig-col: (min(100cqw, var(--container-site)) - 4rem - 3rem) / 4;
+      max-height: calc(var(--ig-col) * 1.25 * 1.4 + 1rem);
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(180deg, #000 62%, transparent 98%);
+      mask-image: linear-gradient(180deg, #000 62%, transparent 98%);
+    }
+  }
+  .ig-caption {
+    background: linear-gradient(180deg, transparent, rgb(17 24 29 / 0.92) 45%);
+    padding-top: 4rem;
+  }
+  @media (hover: hover) and (min-width: 1024px) {
+    .ig-caption {
+      opacity: 0;
+      transform: translateY(12px);
+      transition:
+        opacity 0.4s var(--ease-out-quart),
+        transform 0.5s var(--ease-out-expo);
+    }
+    a:hover .ig-caption,
+    a:focus-visible .ig-caption {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

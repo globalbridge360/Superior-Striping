@@ -1,0 +1,111 @@
+---
+import Pattern from '../Pattern.astro';
+// Reconocimientos: #1 de Business Rate (medalla dorada con brillo que pasa), Veteran Owned y el sello BBB oficial.
+import { getImage } from 'astro:assets';
+import Badge from '../Badge.astro';
+import Button from '../Button.astro';
+import Media from '../Media.astro';
+import { cta } from '../../data/site';
+import medal from '../../assets/img/award-gold.png';
+import veteran from '../../assets/img/veteran-owned.png';
+
+const medalImage = {
+  src: medal,
+  alt: 'Gold medal with a trophy and #1, for the #1 rated asphalt and sealcoating contractor in Nampa',
+  description: 'Superior Striping was named the #1 asphalt and sealcoating contractor in Nampa by Business Rate.',
+};
+const veteranImage = {
+  src: veteran,
+  alt: 'Veteran Owned Business badge with a saluting service member and the American flag',
+  description: 'Superior Striping is a veteran-owned business.',
+};
+// La misma imagen sirve de máscara para que el brillo solo pase sobre la moneda
+const mask = await getImage({ src: medal, width: 640, format: 'webp' });
+const BBB_PROFILE = 'https://www.bbb.org/us/id/nampa/profile/seal-coating/superior-striping-llc-1296-1000199970/#sealclick';
+const BBB_SEAL = 'https://seal-alaskaoregonwesternwashington.bbb.org/seals/blue-seal-150-110-bbb-1000199970.png';
+---
+
+<section class="section-y bg-paper relative isolate" aria-labelledby="award-title">
+  <Pattern kind="topo" fade="bottom-left" />
+  <div class="site-container grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-20">
+    <div class="flex flex-col items-start">
+      <Badge>Recognition</Badge>
+      <h2 id="award-title" class="h-section mt-6 max-w-[18ch]" data-split>The #1 rated asphalt contractor in Nampa</h2>
+      <p class="lead mt-6 max-w-[36rem] text-ink-soft" data-reveal>
+        Business Rate named Superior Striping the #1 asphalt and sealcoating contractor in Nampa. We earned it the slow way:
+        commercial-grade sealer, cracks filled before anything goes down, and lines that stay straight through an Idaho winter.
+        We bring the same care to a home driveway and to a big commercial lot.
+      </p>
+      <div class="mt-9" data-reveal><Button href={cta.href} label={cta.label} /></div>
+
+      <ul class="mt-12 flex flex-wrap items-center gap-6" aria-label="Credentials" data-reveal>
+        <li>
+          <Media image={veteranImage} class="h-[88px] w-[176px]" imgClass="!object-contain" sizes="176px" widths={[176, 352]} fallbackFormat="png" />
+        </li>
+        <li>
+          <a href={BBB_PROFILE} target="_blank" rel="nofollow noopener" class="block rounded-xl bg-[#fff] p-2 ring-1 ring-line transition-transform hover:-translate-y-0.5">
+            <picture>
+              <img src={BBB_SEAL} width="150" height="110" loading="lazy" decoding="async" alt="Superior Striping, LLC BBB Business Review: BBB Accredited Business, A+ rating" class="h-[88px] w-auto" />
+            </picture>
+            <span class="sr-only">(opens the BBB profile in a new tab)</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <figure class="award relative mx-auto w-full max-w-[30rem]" data-reveal>
+      <div class="award-medal" style={`--medal-mask:url(${mask.src})`}>
+        <Media image={medalImage} class="aspect-square w-full" imgClass="!object-contain" sizes="(min-width: 1024px) 480px, 80vw" widths={[480, 720, 960]} fallbackFormat="png" />
+      </div>
+      <figcaption class="mt-6 text-center">
+        <span class="block font-display text-[2rem] font-semibold leading-none tracking-[-0.02em] text-orange-deep">#1 Rated Contractor</span>
+        <span class="mt-2 block text-sm italic text-ink-muted">Awarded by Business Rate</span>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<style>
+  .award-medal {
+    position: relative;
+    filter: drop-shadow(0 30px 40px rgb(120 84 10 / 0.28));
+  }
+  /* Brillo que cruza la moneda en diagonal, recortado con la forma de la propia medalla */
+  .award-medal::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      115deg,
+      transparent 0%,
+      transparent 42%,
+      rgb(255 244 200 / 0.35) 47%,
+      rgb(255 255 245 / 0.75) 50%,
+      rgb(255 244 200 / 0.35) 53%,
+      transparent 58%,
+      transparent 100%
+    );
+    background-size: 250% 250%;
+    background-repeat: no-repeat;
+    mix-blend-mode: screen;
+    -webkit-mask: var(--medal-mask) center / contain no-repeat;
+    mask: var(--medal-mask) center / contain no-repeat;
+    animation: medal-shine 3.6s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+  }
+  @keyframes medal-shine {
+    0% {
+      background-position: 120% 120%;
+    }
+    55%,
+    100% {
+      background-position: -40% -40%;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .award-medal::after {
+      animation: none;
+      opacity: 0;
+    }
+  }
+</style>

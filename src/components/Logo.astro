@@ -1,0 +1,21 @@
+---
+import { Picture } from 'astro:assets';
+import logo from '../assets/img/logo-superior-striping.png';
+
+interface Props {
+  class?: string;
+  priority?: boolean;
+}
+const { class: className = '', priority = false } = Astro.props;
+---
+
+<Picture
+  src={logo}
+  alt="Superior Striping"
+  widths={[220, 440]}
+  sizes="220px"
+  formats={['avif', 'webp']}
+  fallbackFormat="png"
+  loading={priority ? 'eager' : 'lazy'}
+  class:list={['h-auto w-[170px] md:w-[200px]', className]}
+/>

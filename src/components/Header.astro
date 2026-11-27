@@ -1,0 +1,227 @@
+---
+import { Icon } from 'astro-icon/components';
+import Logo from './Logo.astro';
+import Button from './Button.astro';
+import { nav, services, cities, site, cta } from '../data/site';
+---
+
+<a href="#main" class="sr-only-focusable fixed left-4 top-4 z-[70] rounded-full bg-orange px-4 py-2 font-semibold text-asphalt">
+  Skip to content
+</a>
+
+<header class="site-header" data-header data-state="top">
+  <div class="site-container flex h-[72px] items-center justify-between gap-6">
+    <a href="/" class="shrink-0" aria-label="Superior Striping home">
+      <Logo priority />
+    </a>
+
+    <nav aria-label="Main" class="hidden lg:block">
+      <ul class="flex items-center gap-8 text-[0.95rem] font-medium">
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href} class="header-link">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a href={site.phoneHref} class="header-phone hidden items-center gap-2 font-semibold xl:inline-flex">
+        <Icon name="ph:phone-fill" size={18} aria-hidden="true" />
+        {site.phone}
+      </a>
+      <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false">
+        <Icon name="ph:moon-fill" size={18} class="theme-toggle__moon" aria-hidden="true" />
+        <Icon name="ph:sun-fill" size={18} class="theme-toggle__sun" aria-hidden="true" />
+        <span class="sr-only">Dark mode</span>
+      </button>
+      <Button href={cta.href} label={cta.label} class="hidden sm:inline-flex !py-1 !pl-5 text-[0.95rem]" />
+      <button
+        type="button"
+        class="menu-toggle lg:hidden"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+        data-menu-toggle
+      >
+        <span class="sr-only">Open menu</span>
+        <span class="menu-toggle__bar" aria-hidden="true"></span>
+        <span class="menu-toggle__bar" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div id="mobile-menu" class="mobile-menu" data-menu hidden>
+  <div class="site-container flex min-h-[100dvh] flex-col pb-10 pt-28">
+    <nav aria-label="Mobile" class="flex-1">
+      <ul class="space-y-1">
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href} class="mobile-menu__link" data-menu-close>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="mt-10 grid gap-8 text-paper/80 sm:grid-cols-2">
+        <div>
+          <p class="mb-3 text-sm font-semibold text-paper">Services</p>
+          <ul class="space-y-2">
+            {services.slice(0, 6).map((s) => <li><a href={s.href} data-menu-close>{s.name}</a></li>)}
+          </ul>
+        </div>
+        <div>
+          <p class="mb-3 text-sm font-semibold text-paper">Areas we serve</p>
+          <ul class="grid grid-cols-2 gap-2">
+            {cities.map((c) => <li><a href={c.href} data-menu-close>{c.name}</a></li>)}
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="mt-10 flex flex-wrap items-center gap-4">
+      <Button href={cta.href} label={cta.label} />
+      <a href={site.phoneHref} class="inline-flex min-h-11 items-center font-semibold text-paper">{site.phone}</a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 50;
+    color: var(--color-paper);
+    transition:
+      transform 0.5s var(--ease-out-expo),
+      background-color 0.4s var(--ease-out-quart),
+      color 0.4s var(--ease-out-quart),
+      box-shadow 0.4s;
+  }
+  .site-header[data-state='scrolled'] {
+    background: rgb(238 240 241 / 0.88);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    backdrop-filter: blur(14px) saturate(140%);
+    color: var(--color-ink);
+    box-shadow: 0 1px 0 rgb(25 39 48 / 0.08);
+  }
+  .site-header[data-hidden='true'] {
+    transform: translateY(-100%);
+  }
+  .header-link {
+    position: relative;
+    padding-block: 0.4rem;
+  }
+  .header-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: var(--color-orange);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.45s var(--ease-out-expo);
+  }
+  .header-link:hover::after,
+  .header-link[aria-current='page']::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  .menu-toggle {
+    display: grid;
+    place-content: center;
+  }
+  @media (min-width: 1024px) {
+    .menu-toggle {
+      display: none;
+    }
+  }
+  .menu-toggle {
+    gap: 6px;
+    width: 2.9rem;
+    height: 2.9rem;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.12);
+    border: 1px solid rgb(255 255 255 / 0.25);
+  }
+  .site-header[data-state='scrolled'] .menu-toggle {
+    background: var(--color-paper);
+    border-color: var(--color-line);
+  }
+  .theme-toggle {
+    display: grid;
+    place-items: center;
+    width: 2.9rem;
+    height: 2.9rem;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.12);
+    border: 1px solid rgb(255 255 255 / 0.25);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active {
+    transform: scale(0.94);
+  }
+  .site-header[data-state='scrolled'] .theme-toggle {
+    background: var(--color-paper);
+    border-color: var(--color-line);
+  }
+  .theme-toggle__sun {
+    display: none;
+  }
+  :global(html[data-theme='dark']) .theme-toggle__sun {
+    display: block;
+  }
+  :global(html[data-theme='dark']) .theme-toggle__moon {
+    display: none;
+  }
+  :global(html[data-theme='dark']) .site-header[data-state='scrolled'] {
+    background: rgb(15 22 26 / 0.86);
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.06);
+  }
+  .menu-toggle__bar {
+    display: block;
+    width: 1.15rem;
+    height: 2px;
+    background: currentColor;
+    transition: transform 0.4s var(--ease-out-expo);
+  }
+  .menu-toggle[aria-expanded='true'] .menu-toggle__bar:first-of-type {
+    transform: translateY(4px) rotate(45deg);
+  }
+  .menu-toggle[aria-expanded='true'] .menu-toggle__bar:last-of-type {
+    transform: translateY(-4px) rotate(-45deg);
+  }
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 45;
+    background: var(--color-asphalt);
+    color: var(--color-paper);
+    overflow-y: auto;
+  }
+  .mobile-menu__link {
+    display: block;
+    font-size: clamp(2rem, 9vw, 3rem);
+    font-stretch: 112%;
+    font-weight: 750;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+  .mobile-menu a:hover {
+    color: var(--color-orange);
+  }
+  body.menu-open .site-header {
+    color: var(--color-paper);
+    background: transparent;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+</style>

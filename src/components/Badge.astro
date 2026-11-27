@@ -1,0 +1,14 @@
+---
+// Etiqueta de sección al estilo Canopy: píldora con borde punteado y un cono de tráfico.
+import { Icon } from 'astro-icon/components';
+interface Props {
+  tone?: 'light' | 'dark';
+  class?: string;
+}
+const { tone = 'light', class: className = '' } = Astro.props;
+---
+
+<p class:list={['badge', className]} data-tone={tone}>
+  <Icon name="ph:traffic-cone-fill" size={18} class="text-orange" aria-hidden="true" />
+  <slot />
+</p>

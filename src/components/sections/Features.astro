@@ -1,0 +1,62 @@
+---
+// 3 o 4 rasgos con ilustración 3D, título y una frase.
+// Regla del sitio: lo que representa un concepto lleva ilustración 3D de `data/illustrations.ts`; los iconos
+// planos (Phosphor) son solo para la interfaz (flechas, checks, teléfono). `icon` queda como respaldo.
+// `tone="dark"` la pone sobre asfalto: una por página como mucho, igual que en la home.
+import { Icon } from 'astro-icon/components';
+import Badge from '../Badge.astro';
+import Media from '../Media.astro';
+import type { SiteImage } from '../../data/images';
+
+interface Props {
+  id: string;
+  badge?: string;
+  title: string;
+  intro?: string;
+  features: { art?: SiteImage; icon?: string; title: string; text: string }[];
+  tone?: 'light' | 'dark';
+}
+const { id, badge, title, intro, features, tone = 'light' } = Astro.props;
+const dark = tone === 'dark';
+---
+
+<section class:list={['section-y', dark ? 'bg-asphalt' : 'bg-paper']} aria-labelledby={`${id}-title`}>
+  <div class="site-container">
+    <div class="grid gap-8 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:gap-16">
+      <div>
+        {badge && <Badge tone={tone}>{badge}</Badge>}
+        <h2 id={`${id}-title`} class:list={['h-section max-w-[16ch]', badge && 'mt-5']} data-split>{title}</h2>
+      </div>
+      {intro && <p class:list={['lead max-w-[34rem]', dark ? 'text-paper/80' : 'text-ink-soft']} data-reveal>{intro}</p>}
+    </div>
+    <ul class:list={['mt-14 grid gap-5 sm:grid-cols-2', features.length === 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-4']}>
+      {
+        features.map((f, i) => (
+          <li
+            class:list={[
+              'flex items-center gap-3 rounded-[var(--radius-card)] p-5 sm:block sm:p-7',
+              // Las ilustraciones llevan una losa oscura: siempre van sobre tarjeta clara, también en la sección asfalto
+              dark ? 'bg-paper' : 'bg-concrete',
+              i % 2 === 1 && 'lg:mt-10',
+            ]}
+            data-reveal
+          >
+            {f.art ? (
+              <Media image={f.art} class="-ml-3 h-28 w-28 shrink-0 sm:-ml-5 sm:-mt-5 sm:h-44 sm:w-44 md:h-48 md:w-48" imgClass="!object-contain" sizes="192px" widths={[384]} fallbackFormat="png" />
+            ) : (
+              f.icon && (
+                <span class:list={['grid h-12 w-12 place-items-center rounded-full text-orange', dark ? 'bg-concrete' : 'bg-paper']}>
+                  <Icon name={f.icon} size={26} aria-hidden="true" />
+                </span>
+              )
+            )}
+            <div>
+              <h3 class:list={['h-card', f.art ? 'sm:mt-2' : 'mt-8']}>{f.title}</h3>
+              <p class="mt-3 text-ink-soft">{f.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

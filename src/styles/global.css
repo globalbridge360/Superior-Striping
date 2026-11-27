@@ -1,0 +1,384 @@
+@import "tailwindcss";
+@import "@fontsource-variable/bricolage-grotesque/index.css";
+@import "@fontsource-variable/inter-tight/index.css";
+
+/* ------------------------------------------------------------------
+   Tokens de Superior Striping
+   Identidad: logo esténcil + naranja de seguridad, tinta asfalto,
+   grises de concreto. Escala tipográfica y ritmo de Canopy:
+   Bricolage Grotesque para títulos, Inter Tight para texto.
+------------------------------------------------------------------- */
+@theme {
+  --color-asphalt: #11181d;
+  --color-ink: #192730;
+  --color-ink-soft: #46535b;
+  --color-ink-muted: #5f6b72;
+  --color-concrete: #eef0f1;
+  --color-paper: #f8f9f9;
+  --color-line: #d5dadd;
+  --color-orange: #ee6a1f;
+  --color-orange-deep: #d4560f;
+  --color-stripe: #ffffff;
+
+  --font-sans: "Inter Tight Variable", "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque Variable", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 1rem;
+  --radius-pill: 999px;
+
+  --container-site: 1424px;
+
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ------------------------------------------------------------------
+   Modo oscuro: se cambian las superficies y el texto. Las zonas que ya
+   son oscuras (hero, secciones asfalto, footer, menú, header sobre el
+   hero) recuperan los valores claros para que su texto siga siendo claro.
+------------------------------------------------------------------- */
+html[data-theme='dark'] {
+  color-scheme: dark;
+  --color-paper: #162027;
+  --color-concrete: #0e1519;
+  --color-white: #1c272e;
+  --color-ink: #eef2f3;
+  --color-ink-soft: #b8c3c8;
+  --color-ink-muted: #94a1a7;
+  --color-line: #2b3840;
+  --color-asphalt: #070b0e;
+}
+html[data-theme='dark'] :is(.bg-asphalt, [data-hero], .site-header[data-state='top'], .mobile-menu) {
+  --color-paper: #f8f9f9;
+  --color-concrete: #eef0f1;
+  --color-white: #ffffff;
+  --color-ink: #192730;
+  --color-ink-soft: #46535b;
+  --color-ink-muted: #5f6b72;
+  --color-line: #d5dadd;
+}
+/* Botones oscuros: en modo oscuro se invierten para no desaparecer sobre el fondo */
+html[data-theme='dark'] .btn-pill[data-variant='dark'],
+html[data-theme='dark'] .mobile-bar__call {
+  --btn-bg: #eef2f3;
+  --btn-fg: #11181d;
+}
+html[data-theme='dark'] :is(.bg-asphalt, [data-hero]) .btn-pill[data-variant='dark'] {
+  --btn-bg: #11181d;
+  --btn-fg: #f8f9f9;
+}
+html {
+  transition: background-color 0.3s;
+}
+
+/* Alto de la franja de logos: el hero mide 100dvh menos esto, así los logos se ven al cargar */
+:root {
+  --strip-h: 6.25rem;
+}
+@media (min-width: 1024px) {
+  :root {
+    --strip-h: 8.5rem;
+  }
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    background: var(--color-concrete);
+    color: var(--color-ink);
+  }
+
+  /* Toda superficie clara u oscura fija su propio color de texto con los tokens de su zona.
+     Sin esto, el texto hereda el color ya calculado del <html> y en modo oscuro queda
+     claro sobre tarjetas claras (o al revés). Las utilidades text-* siguen ganando. */
+  .bg-paper,
+  .bg-white,
+  .bg-concrete {
+    color: var(--color-ink);
+  }
+  .bg-asphalt,
+  .bg-ink {
+    color: var(--color-paper);
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.5;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    text-wrap: balance;
+  }
+  h1 {
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-orange);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: var(--color-orange);
+    color: var(--color-asphalt);
+  }
+
+  img,
+  video {
+    display: block;
+    max-width: 100%;
+  }
+}
+
+@layer components {
+  .site-container {
+    width: 100%;
+    max-width: var(--container-site);
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .site-container {
+      padding-inline: 2rem;
+    }
+  }
+
+  /* Ritmo vertical de Canopy: 132px entre secciones en escritorio */
+  /* Ritmo entre secciones al estilo Cloudflare: ~104px entre bloques en móvil y ~112px en escritorio */
+  .section-y {
+    padding-block: 3.25rem;
+  }
+  @media (min-width: 1024px) {
+    .section-y {
+      padding-block: 3.5rem;
+    }
+  }
+
+  /* Etiqueta de sección: píldora con borde punteado (Canopy) y un cono naranja */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem 0.5rem 0.8rem;
+    border: 1px dashed color-mix(in srgb, var(--color-ink) 38%, transparent);
+    border-radius: 999px;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--color-ink);
+  }
+  .badge[data-tone="dark"] {
+    border-color: rgb(248 249 249 / 0.35);
+    color: var(--color-paper);
+  }
+
+  /* Escala Canopy: H1 96px, H2 64px, tarjetas 28px, texto destacado 20/30 */
+  .h-display {
+    font-size: clamp(3rem, 6.6vw, 6rem);
+  }
+  /* H1 de página interior: un paso por debajo del de la home */
+  .h-page {
+    font-size: clamp(2.6rem, 5.4vw, 5rem);
+  }
+  .h-section {
+    font-size: clamp(2.4rem, 4.4vw, 4rem);
+  }
+  .h-card {
+    font-size: clamp(1.4rem, 1.9vw, 1.75rem);
+    line-height: 1.12;
+  }
+  .lead {
+    font-size: 1.25rem;
+    line-height: 1.5;
+  }
+
+  /* Media: <figure> con <picture> y descripción */
+  .media-fill picture,
+  .media-fill img {
+    width: 100%;
+    height: 100%;
+  }
+  .media-fill img {
+    object-fit: cover;
+  }
+
+  /* Esquina recortada (muesca cóncava): el recorte toma el color del fondo
+     con --notch-bg y deja sitio a un elemento en la esquina inferior derecha. */
+  .notch {
+    --r: 1.25rem;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    background: var(--notch-bg, var(--color-concrete));
+    border-top-left-radius: var(--r);
+    padding: 0.75rem 0 0 0.75rem;
+  }
+  .notch::before,
+  .notch::after {
+    content: "";
+    position: absolute;
+    width: var(--r);
+    height: var(--r);
+    background: radial-gradient(circle at 0 0, transparent calc(var(--r) - 0.5px), var(--notch-bg, var(--color-concrete)) var(--r));
+  }
+  .notch::before {
+    right: 0;
+    bottom: 100%;
+  }
+  .notch::after {
+    right: 100%;
+    bottom: 0;
+  }
+
+  /* Botón en píldora con texto que rueda y círculo con flecha */
+  .btn-pill {
+    --btn-bg: var(--color-orange);
+    --btn-fg: var(--color-asphalt);
+    --btn-dot: var(--color-asphalt);
+    --btn-dot-fg: var(--color-orange);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.35rem 0.35rem 0.35rem 1.6rem;
+    border-radius: var(--radius-pill);
+    background: var(--btn-bg);
+    color: var(--btn-fg);
+    font-weight: 650;
+    font-size: 1rem;
+    line-height: 1;
+    white-space: nowrap;
+    transition: transform 0.2s var(--ease-out-quart), background-color 0.3s var(--ease-out-quart);
+  }
+  .btn-pill:active {
+    transform: scale(0.97);
+  }
+  .btn-pill[data-variant="dark"] {
+    --btn-bg: var(--color-asphalt);
+    --btn-fg: var(--color-paper);
+    --btn-dot: var(--color-orange);
+    --btn-dot-fg: var(--color-asphalt);
+  }
+  .btn-pill[data-variant="light"] {
+    --btn-bg: var(--color-paper);
+    --btn-fg: var(--color-asphalt);
+    --btn-dot: var(--color-orange);
+    --btn-dot-fg: var(--color-asphalt);
+  }
+  .btn-pill__text {
+    position: relative;
+    display: block;
+    height: 1.25em;
+    overflow: hidden;
+  }
+  .btn-pill__text span {
+    display: block;
+    line-height: 1.25em;
+    transition: transform 0.45s var(--ease-out-expo);
+  }
+  .btn-pill__dot {
+    display: grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 50%;
+    background: var(--btn-dot);
+    color: var(--btn-dot-fg);
+    transition: transform 0.45s var(--ease-out-expo);
+  }
+  @media (hover: hover) {
+    .btn-pill:hover .btn-pill__text span {
+      transform: translateY(-100%);
+    }
+    .btn-pill:hover .btn-pill__dot {
+      transform: rotate(-45deg);
+    }
+  }
+
+  .link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.3em;
+    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+    transition: text-decoration-color 0.3s;
+  }
+  .link-arrow:hover {
+    text-decoration-color: var(--color-orange);
+  }
+  /* En pantallas táctiles los enlaces de texto sueltos tienen al menos 40 px de alto */
+  @media (pointer: coarse), (max-width: 767px) {
+    .link-arrow {
+      min-height: 2.5rem;
+    }
+  }
+
+
+  .sr-only-focusable:not(:focus) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* Estados iniciales de animación: solo si hay JS y se permite movimiento */
+@media (prefers-reduced-motion: no-preference) {
+  html.js [data-reveal] {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  html.js [data-hero-fade] {
+    opacity: 0;
+  }
+  html.js [data-split] {
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

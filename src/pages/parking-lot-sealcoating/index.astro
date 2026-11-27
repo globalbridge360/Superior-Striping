@@ -1,0 +1,138 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/sections/PageHero.astro';
+import SplitList from '../../components/sections/SplitList.astro';
+import Steps from '../../components/sections/Steps.astro';
+import Features from '../../components/sections/Features.astro';
+import Compare from '../../components/sections/Compare.astro';
+import Season from '../../components/sections/Season.astro';
+import Faq from '../../components/sections/Faq.astro';
+import { businessNode, faqNode, BUSINESS_ID } from '../../data/schema';
+import { cities } from '../../data/site';
+import { images } from '../../data/images';
+import { included, steps, sealer, costColumns, costRows, costFactors, notRight, faq } from '../../data/parking-lot-sealcoating';
+import { getImage } from 'astro:assets';
+import logo from '../../assets/img/logo-superior-striping.png';
+
+const site = 'https://superior-striping.com';
+const pageUrl = `${site}/parking-lot-sealcoating/`;
+const logoImg = await getImage({ src: logo, width: 600, format: 'png' });
+const heroImg = await getImage({ src: images.sealcoatFresh.src, width: 1600, format: 'jpg' });
+const title = 'Commercial Parking Lot Sealcoating | Superior Striping';
+const description =
+  'Two-coat parking lot sealcoating with hot rubber crack filling and re-striping across the Treasure Valley. 2-year written warranty. Get a free estimate.';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    businessNode(new URL(logoImg.src, site).toString(), new URL(heroImg.src, site).toString()),
+    {
+      '@type': 'WebPage',
+      '@id': `${pageUrl}#webpage`,
+      url: pageUrl,
+      name: title,
+      description,
+      isPartOf: { '@id': `${site}/#website` },
+      about: { '@id': `${pageUrl}#service` },
+      breadcrumb: { '@id': `${pageUrl}#breadcrumb` },
+      inLanguage: 'en-US',
+    },
+    {
+      '@type': 'Service',
+      '@id': `${pageUrl}#service`,
+      name: 'Commercial parking lot sealcoating',
+      serviceType: 'Parking lot sealcoating',
+      description,
+      provider: { '@id': BUSINESS_ID },
+      areaServed: cities.map((c) => ({ '@type': 'City', name: c.name, sameAs: c.wiki })),
+      url: pageUrl,
+    },
+    {
+      '@type': 'BreadcrumbList',
+      '@id': `${pageUrl}#breadcrumb`,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: `${site}/` },
+        { '@type': 'ListItem', position: 2, name: 'Parking lot sealcoating', item: pageUrl },
+      ],
+    },
+    faqNode(faq, pageUrl),
+  ],
+};
+---
+
+<BaseLayout title={title} description={description} namespace="parking-lot-sealcoating" jsonLd={jsonLd}>
+  <PageHero
+    title="Commercial Parking Lot Sealcoating"
+    lead="Two coats of commercial-grade sealer over a parking lot cleaned down to bare asphalt, with every crack filled in hot rubber first. Superior Striping seals lots across the Treasure Valley and backs the work in writing."
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Parking lot sealcoating' }]}
+    facts={['Two coats standard', '2-year written warranty', 'Season: May 15 to October 15']}
+    image={images.sealcoatFresh}
+    position="object-[center_65%]"
+  />
+
+  <SplitList
+    id="included"
+    badge="What you get"
+    title="What is included in a parking lot sealcoating job?"
+    intro="A commercial sealcoating job covers the prep, the crack filling and two coats of sealer. We clean the parking lot to bare asphalt, fill the cracks with hot rubber, brush the edges by hand and spray the rest. Then the lot gets its lines back."
+    items={included}
+    image={images.sealcoatCrew}
+  />
+
+  <Steps
+    id="process"
+    badge="Process"
+    title="How we sealcoat a commercial parking lot"
+    intro="Six steps, and four of them happen before any sealer leaves the tank."
+    quote="Sealcoat doesn't stick to dirt."
+    steps={steps}
+  />
+
+  <Features
+    id="sealer"
+    badge="Materials"
+    title="Commercial-grade sealer, two coats standard"
+    intro="Watered-down sealer is the most common shortcut in this trade. Here is what goes on your parking lot."
+    features={sealer}
+    tone="dark"
+  />
+
+  <Compare
+    id="cost"
+    badge="Pricing"
+    title="How much does parking lot sealcoating cost in Idaho?"
+    intro="Sealcoating costs a fraction of what an overlay or a repave does, and regular sealing can roughly triple the life of the asphalt. These are ballpark figures. We quote every commercial parking lot after we walk it."
+    columns={costColumns}
+    rows={costRows}
+    highlight={0}
+    note="Ballpark figures from our own jobs. Your written quote is the price."
+    factorsTitle="What moves a sealcoating quote"
+    factors={costFactors}
+  />
+
+  <Season
+    id="interval"
+    title="How often should a parking lot be sealcoated?"
+    text="Every 3 to 4 years, and sooner on a lot with heavy traffic. In the Treasure Valley the summer sun wears asphalt harder than the winters do, and sprinkler overspray strips sealer faster than most owners expect. The season runs May 15 to October 15, and the schedule fills in June."
+    image={images.seasonLot}
+    showLogo={false}
+  />
+
+  <SplitList
+    id="not-right"
+    badge="Straight talk"
+    title="When sealcoating is not the right call"
+    intro="Sealer protects sound asphalt. It does not rebuild a parking lot that has already failed, and we will tell you so before you spend the money."
+    items={notRight}
+    image={images.svcPatching}
+    mark="x"
+    reverse
+  />
+
+  <Faq
+    items={faq}
+    title="Parking lot sealcoating FAQs"
+    intro="What owners and property managers ask before they book commercial sealcoating."
+    link={null}
+  />
+</BaseLayout>
